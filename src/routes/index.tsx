@@ -8,6 +8,8 @@ import AuthRoutes from "./auth/AuthRoute";
 import AdminRoutes from "./admin/AdminRoute";
 import UserRoutes from "./user/UserRoute";
 import NotFound from "../pages/notFound/NotFound";
+import HygieneFinding from "../components/pages/officeAutomation/HygieneFinding";
+import SafetyFinding from "../components/pages/officeAutomation/SafetyFinding";
 
 const AppRouter = () => {
   return (
@@ -23,6 +25,11 @@ const AppRouter = () => {
                     <Home />
                   </ProtectedRoute>
                 }
+              />
+              <Route path="/safety-finding-form" element={<SafetyFinding />} />
+              <Route
+                path="/hygiene-finding-form"
+                element={<HygieneFinding />}
               />
               {/* Auth Routes */}
               <Route path="/auth/*" element={<AuthRoutes />} />

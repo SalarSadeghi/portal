@@ -72,3 +72,29 @@ main {
 a {
   text-decoration: none;
 }
+
+::-webkit-scrollbar {
+  width: 12px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Track background */
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4caf50, skyblue);
+  border-radius: 10px;
+  border: 3px solid #f0f0f0; /* Creates padding around thumb */
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #66bb6a, #388e3c);
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: skyblue #f0f0f0;
+}

@@ -4,6 +4,7 @@ import { isAuthLayout } from "../../../utils";
 import { ThemeIcon } from "./HeaderItems";
 
 function Header() {
+  
   const location = useLocation();
   return (
     <Paper

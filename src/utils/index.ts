@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from "@mui/material";
 import Cookies from "js-cookie";
 import { useLocation } from "react-router-dom";
 
@@ -21,4 +22,10 @@ export const isAuthLayout = (location: RouterLocation) => {
   // lacation is made of useLocation()
   const currentPath = location.pathname;
   return currentPath?.includes("auth/");
+};
+
+export const isDesktop = () => {
+  const theme = useTheme();
+  const isDesktopMode = useMediaQuery(theme.breakpoints.up("sm"));
+  return isDesktopMode;
 };

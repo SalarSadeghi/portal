@@ -9,6 +9,7 @@ export interface SidebarItem {
   kind: "header" | "item";
   title: string;
   icon?: JSX.Element;
+  href?: string;
   children?: SidebarItem[];
 }
 const ReportItems: SidebarItem[] = [
@@ -26,18 +27,18 @@ const ReportItems: SidebarItem[] = [
 
 export const Items: SidebarItem[][] = [
   [
-    { kind: "header", title: "Settings" },
-    { kind: "item", title: "Dashboard", icon: <DashboardIcon /> },
-    { kind: "item", title: "Orders", icon: <ShoppingCartIcon /> },
+    { kind: "header", title: "سرویس‌ها" },
+    { kind: "item", title: "اتوماسیون اداری", icon: <DashboardIcon />, href: "/" },
+    // { kind: "item", title: "Orders", icon: <ShoppingCartIcon /> },
   ],
-  [
-    { kind: "header", title: "Analytics" },
-    {
-      kind: "item",
-      title: "Reports",
-      icon: <BarChartIcon />,
-      children: ReportItems,
-    },
-    { kind: "item", title: "Integerations", icon: <LayersIcon /> },
-  ],
+  // [
+  //   { kind: "header", title: "Analytics" },
+  //   {
+  //     kind: "item",
+  //     title: "Reports",
+  //     icon: <BarChartIcon />,
+  //     children: ReportItems,
+  //   },
+  //   { kind: "item", title: "Integerations", icon: <LayersIcon /> },
+  // ],
 ];

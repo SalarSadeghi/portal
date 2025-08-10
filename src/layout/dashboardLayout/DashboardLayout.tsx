@@ -15,7 +15,7 @@ const DashboardLayout = () => {
       )}
       <div className="flex flex-col grow">
         <Header />
-        <div className="p-4 grow">
+        <div className="p-4 grow overflow-y-auto">
           <Outlet />
         </div>
       </div>

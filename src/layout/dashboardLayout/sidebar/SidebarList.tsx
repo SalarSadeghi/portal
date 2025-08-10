@@ -13,16 +13,20 @@ import {
 import React from "react";
 
 import { sidebarStore } from "../../../store/SidebarStore";
+import { useNavigate } from "react-router-dom";
 
 function SidebarList() {
   const isSidebarOpen = sidebarStore((state) => state.isSidebarOpen);
-
   const [open, setOpen] = React.useState(false);
-
+  const navigate = useNavigate();
   const handleClick = (item: SidebarItem) => {
     if (item.children) {
       setOpen(!open);
       return;
+    } else {
+      if (item.href) {
+        navigate(item.href);
+      }
     }
   };
   return (
@@ -46,9 +50,7 @@ function SidebarList() {
                   <>
                     <ListItemButton onClick={() => handleClick(item)}>
                       <ListItemIcon>{item.icon}</ListItemIcon>
-                      {isSidebarOpen && (
-                        <ListItemText primary={item.title} />
-                      )}
+                      {isSidebarOpen && <ListItemText primary={item.title} />}
                       {item.children &&
                         isSidebarOpen &&
                         (open ? <ExpandLess /> : <ExpandMore />)}

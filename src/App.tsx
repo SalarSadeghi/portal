@@ -1,9 +1,12 @@
 import AppRouter from "./routes";
+import CustomThemeProvider from "./theme/CustomThemeProvider";
 
 function App() {
   return (
     <>
-      <AppRouter />
+      <CustomThemeProvider>
+        <AppRouter />
+      </CustomThemeProvider>
     </>
   );
 }

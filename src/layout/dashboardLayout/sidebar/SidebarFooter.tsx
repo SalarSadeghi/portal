@@ -30,7 +30,7 @@ const SidebarFooter = React.memo(function SidebarFooter() {
           <ListItemIcon>
             <Logout />
           </ListItemIcon>
-          {isSidebaropen && <ListItemText primary={"logout"} />}
+          {isSidebaropen && <ListItemText primary={"خروج"} />}
         </ListItemButton>
       </List>
     </>
