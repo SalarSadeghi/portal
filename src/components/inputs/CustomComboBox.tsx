@@ -36,7 +36,7 @@ function ComboBox({
     renderOption,
     multiple,
     filterSelectedOptions,
-    noOptionText,
+    noOptionText=<span className='text-gray-400'>موردی یافت نشد</span>,
     handleOnChange,
     loading,
     getOptionLabel,

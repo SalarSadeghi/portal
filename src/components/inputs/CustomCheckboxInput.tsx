@@ -32,7 +32,7 @@ const CustomCheckboxInput: React.FC<CustomCheckboxInputProps> = ({
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    color="primary"
+                                    // color="primary"
                                     sx={{
                                         '& .MuiSvgIcon-root:not(.MuiSvgIcon-root ~ .MuiSvgIcon-root)':
                                             {

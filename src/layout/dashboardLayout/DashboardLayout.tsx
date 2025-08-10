@@ -3,7 +3,6 @@ import { isAuthLayout } from "../../utils";
 import Sidebar from "./sidebar/Sidebar";
 import Header from "./header/Header";
 
-
 const DashboardLayout = () => {
   const location = useLocation();
   return (
@@ -24,5 +23,3 @@ const DashboardLayout = () => {
 };
 
 export default DashboardLayout;
-
-
