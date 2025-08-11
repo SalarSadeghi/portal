@@ -1,7 +1,7 @@
 import { Button, InputAdornment } from "@mui/material";
 import CustomTextInput from "../../../inputs/CustomTextInput";
 import { isDesktop } from "../../../../utils";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { HygieneFindingFormSchema } from "../../../../validations/officeAutomation/HygieneFinding";
 import CustomComboBox from "../../../inputs/CustomComboBox";
@@ -12,8 +12,19 @@ import { modalStore } from "../../../../store/ModalStore";
 import HygieneFindingRegionModal from "./HygieneFindingRegionModal";
 import HygieneFindingResponsiblePersonModal from "./HygieneFindingResponsiblePersonModal";
 import HygieneFindingContractorModal from "./HygieneFindingContractorModal";
+import {
+  priorityOptions,
+  type PriorityOption,
+} from "../../../../api/officeAutomation/hygienFinding";
 
-interface FormValues {}
+interface FormValues {
+  priority: PriorityOption;
+  correction: boolean;
+  description: string;
+  region: string;
+  contractor: string;
+  date: string;
+}
 enum ModalKeys {
   REGION = "REGION",
   RESPONSIBLE_PERSON = "RESPONSIBLE_PERSON",
@@ -32,7 +43,7 @@ const HygieneFinding = () => {
     setValue,
     formState: { errors },
   } = useForm<FormValues | any>({
-    // resolver: yupResolver(HygieneFindingFormSchema),
+    resolver: yupResolver(HygieneFindingFormSchema),
     defaultValues,
   });
 
@@ -42,7 +53,7 @@ const HygieneFinding = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("submit called");
+    console.log("submit called", data);
   };
 
   return (
@@ -114,6 +125,7 @@ const HygieneFinding = () => {
             >
               <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                 <CustomComboBox
+                  options={priorityOptions}
                   control={control}
                   label="نوع اولویت"
                   name="priority"
@@ -178,19 +190,28 @@ const HygieneFinding = () => {
               }`}
             >
               <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                <DatePicker
-                  className="w-full"
-                  // disableFuture
-                  // openTo="day"
-                  value={date}
-                  label={`تاریخ پیشنهادی اقدام`}
-                  // helperText={Texts.common.selectSearchDate}
-                  onChange={(value) => {
-                    value ? setDate(value) : setDate(undefined);
-                  }}
-                  // slotProps={{
-                  //   actionBar: { actions: ["accept", "cancel", "clear"] },
-                  // }}
+                <Controller
+                  control={control}
+                  name="date"
+                  render={({ field, fieldState }) => (
+                    <DatePicker
+                      {...field}
+                      className="w-full"
+                      // disableFuture
+                      // openTo="day"
+                      value={date}
+                      label={`تاریخ پیشنهادی اقدام`}
+                      // helperText={Texts.common.selectSearchDate}
+                      onChange={(value) => {
+                        value ? setDate(value) : setDate(undefined);
+                      }}
+                      slotProps={{
+                        actionBar: { actions: ["accept", "cancel", "clear"] },
+                      }}
+                      error={!!fieldState.error}
+                      helperText={fieldState?.error?.message}
+                    />
+                  )}
                 />
               </div>
               <div

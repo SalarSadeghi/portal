@@ -3,7 +3,7 @@ import {
   DataGrid as MuiDataGrid,
   gridClasses,
   GridToolbar,
-  type DataGridProps,
+  type DataGridProps, 
 } from "@mui/x-data-grid";
 import { alpha, Box, styled } from "@mui/material";
 import { dataGridLocaleTexts } from "../../constant/dataGrid";
@@ -19,8 +19,8 @@ const ODD_OPACITY = 0.2;
 const CustomDataGrid = styled(MuiDataGrid)(({ theme, loading, rows }) => ({
   height: loading || rows?.length === 0 ? "300px" : undefined,
   "& .MuiDataGrid-columnHeaders": {
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.background.default,
+    backgroundColor: theme.palette.primary.main,
+    // color: theme.palette.background.default,
   },
   "& .MuiDataGrid-iconButtonContainer .MuiIconButton-root": {
     color: theme.palette.background.default,

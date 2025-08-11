@@ -6,9 +6,9 @@ import Header from "./header/Header";
 const DashboardLayout = () => {
   const location = useLocation();
   return (
-    <div className="flex w-full h-screen overflow-hidden ">
+    <div className="flex w-full h-screen overflow-hidden">
       {!isAuthLayout(location) && (
-        <div className={`h-screen flex`}>
+        <div className={`h-screen flex max-w-[42%]`}>
           <Sidebar />
         </div>
       )}

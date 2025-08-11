@@ -6,7 +6,7 @@ function SidebarHeader() {
   const isSidebarOpen = sidebarStore((state) => state.isSidebarOpen);
   const toggleSidebar = sidebarStore((state) => state.toggleSidebar);
   return (
-    <div className="h-16 flex flex-col pt-4">
+    <div className="h-16 w- flex flex-col pt-4">
       <div className={`w-full px-4 flex justify-end`}>
         <IconButton onClick={() => toggleSidebar(isSidebarOpen)}>
           {isSidebarOpen ? <MenuOpen className="rtl:rotate-180" /> : <Menu />}

@@ -7,6 +7,11 @@ import {
   type GridColDef,
 } from "@mui/x-data-grid";
 
+
+
+const HygieneFindingContractorModal = () => {
+  const { isOpenModal, changeIsOpenModal } = modalStore();
+  const isDesktopMode = isDesktop();
 const columns: GridColDef[] = [
     // {
     //   ...GRID_CHECKBOX_SELECTION_COL_DEF,
@@ -34,7 +39,7 @@ const columns: GridColDef[] = [
     // },
   {
     field: "subject",
-    headerName: "نام پیمانکار",
+    headerName: "مشخصات پیمانکار",
     align: "center",
     headerAlign: "center",
     minWidth: 180,
@@ -42,65 +47,12 @@ const columns: GridColDef[] = [
     sortable: true,
     filterable: false,
   },
-  //   {
-  //     field: "description",
-  //     // headerName:
-  //     //   Texts.pages.recordLessonsLearned.addNewLessonsLearned.description,
-  //     align: "center",
-  //     headerAlign: "center",
-  //     sortable: false,
-  //     minWidth: 250,
-  //     filterable: false,
-  //     // valueFormatter: (params) => showSplitText(params?.value, 50).splitText,
-  //   },
-  //   {
-  //     field: "registrar",
-  //     headerName:
-  //       "Texts.pages.recordLessonsLearned.addNewLessonsLearned.registrar",
-  //     align: "center",
-  //     headerAlign: "center",
-  //     minWidth: 150,
-  //     sortable: false,
-  //     filterable: false,
-  //     valueGetter: (params) =>
-  //       `${params.row?.fullName} - ${params.row?.personnelCode}`,
-  //   },
-  //   {
-  //     field: "createdDate",
-  //     // headerName:
-  //     //   Texts.pages.recordLessonsLearned.addNewLessonsLearned.dateOfRegistration,
-  //     align: "center",
-  //     headerAlign: "center",
-  //     minWidth: 150,
-  //     sortable: false,
-  //     filterable: false,
-  //     // valueFormatter: (params) => formatJalaliNumeric(params?.value),
-  //   },
-  //   {
-  //     field: "committee",
-  //     headerName: Texts.pages.recordLessonsLearned.addNewLessonsLearned.committee,
-  //     align: "center",
-  //     headerAlign: "center",
-  //     minWidth: 180,
-  //     sortable: false,
-  //     filterable: false,
-  //   },
-  //   {
-  //     field: "subtitle",
-  //     // headerName:
-  //     //   Texts.pages.recordLessonsLearned.addNewLessonsLearned.scientificField,
-  //     align: "center",
-  //     headerAlign: "center",
-  //     minWidth: 180,
-  //     sortable: false,
-  //     filterable: false,
-  //   },
+
 ];
-
-const HygieneFindingContractorModal = () => {
-  const { isOpenModal, changeIsOpenModal } = modalStore();
-  const isDesktopMode = isDesktop();
-
+const rows = [
+  { id:1, subject: "سالار صادقی"},
+  { id:2, subject: "علی رحیمی"}
+]
   return (
     <Modal
       width="80%"
@@ -123,7 +75,7 @@ const HygieneFindingContractorModal = () => {
                   maxWidth: undefined,
                 }),
               })),
-              rows: [],
+              rows: rows || [],
               // loading: isLoading,
               pageSizeOptions: [5, 10, 25, 50, 100],
               // paginationModel,

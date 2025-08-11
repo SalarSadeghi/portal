@@ -13,7 +13,6 @@ const themeOptions: ThemeOptions = {
       default: "#FFFFFF",
     },
     primary: {
-      //   main: "#F57C00",
       main: "#13678a",
     },
     secondary: {
@@ -46,11 +45,12 @@ const themeOptions: ThemeOptions = {
 };
 
 const lightTheme = createTheme(themeOptions);
-// lightTheme.components = {
-//     ...Container(lightTheme),
-//     ...Accordion(lightTheme),
-//     ...Tooltip(),
-//     ...Autocomplete(lightTheme)
-// };
+lightTheme.components = {
+    // ...Container(),
+    // ...Accordion(lightTheme),
+    // ...Tooltip(),
+    // ...Autocomplete(lightTheme)
+
+};
 
 export default lightTheme;

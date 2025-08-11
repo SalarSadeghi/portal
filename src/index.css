@@ -60,7 +60,8 @@ body {
   overflow: auto;
 }
 
-label, li {
+label,
+li {
   font-family: inherit !important;
 }
 
@@ -102,3 +103,5 @@ a {
   scrollbar-width: thin;
   scrollbar-color: #13678a #f0f0f0;
 }
+
+
