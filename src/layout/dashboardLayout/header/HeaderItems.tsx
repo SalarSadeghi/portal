@@ -57,8 +57,7 @@ import { useEffect, useState } from "react";
 
 // Change Theme Component
 const ThemeIcon = function ThemeIcon() {
-  console.log("theme icon");
-
+  
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     // Check local storage for theme preference
     return (

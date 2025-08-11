@@ -29,7 +29,7 @@ function Home() {
           <>
             <div
               onClick={() => handleNavigate(c)}
-              className="flex text-gray-800 min-w-1/5 items-center cursor-pointer shadow-lg p-4 rounded-lg min-h-[100px] hover:bg-blue-100"
+              className="flex text-gray-800 min-w-1/5 items-center cursor-pointer shadow-lg p-4 rounded-lg min-h-[100px] hover:bg-[#13678a] hover:text-white"
             >
               {c.title}
             </div>

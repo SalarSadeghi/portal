@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import CustomComboBox from "../../inputs/CustomComboBox";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SafetyFindingFormSchema } from "../../../validations/officeAutomation/SafetyFinding";
@@ -6,6 +6,7 @@ import CustomTextInput from "../../inputs/CustomTextInput";
 import { Button, InputAdornment, useTheme } from "@mui/material";
 import { isDesktop } from "../../../utils";
 import CustomCheckboxInput from "../../inputs/CustomCheckboxInput";
+import { DatePicker } from "../../inputs/date/DatePicker";
 
 interface FormValues {}
 
@@ -21,12 +22,17 @@ const SafetyFinding = () => {
     setValue,
     formState: { errors },
   } = useForm<FormValues | any>({
-    resolver: yupResolver(SafetyFindingFormSchema),
+    // resolver: yupResolver(SafetyFindingFormSchema),
     defaultValues,
   });
+
+  const onSubmit: SubmitHandler<FormValues> = (data) => {
+    console.log("submit called");
+  };
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="bg-blue-400 flex flex-col gap-2 p-4 rounded-md">
+      <div className="bg-[#13678a] flex flex-col gap-2 p-4 rounded-md">
         <h1 className="text-white text-center text-2xl">
           سیستم جامع اقدامات اصلاحی
         </h1>
@@ -35,7 +41,7 @@ const SafetyFinding = () => {
         </h3>
       </div>
       <div>
-        <form className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className={``}>
             <CustomComboBox
               name="subject"
@@ -53,7 +59,7 @@ const SafetyFinding = () => {
                   <InputAdornment position="end">
                     <Button
                       variant="contained"
-                      color="info"
+                      color="primary"
                       size="small"
                       //   onClick={handleShowBanksClick}
                     >
@@ -74,7 +80,7 @@ const SafetyFinding = () => {
                   <InputAdornment position="end">
                     <Button
                       variant="contained"
-                      color="info"
+                      color="primary"
                       size="small"
                       //   onClick={handleShowBanksClick}
                     >
@@ -115,7 +121,7 @@ const SafetyFinding = () => {
                   <InputAdornment position="end">
                     <Button
                       variant="contained"
-                      color="info"
+                      color="primary"
                       size="small"
                       //   onClick={handleShowBanksClick}
                     >
@@ -150,10 +156,20 @@ const SafetyFinding = () => {
             }`}
           >
             <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-              <CustomComboBox
-                control={control}
-                label="اولویت"
-                name="priority"
+              <DatePicker
+                className="w-full"
+                // disableFuture
+                // openTo="day"
+                // value={dateFilter as unknown as Date}
+                label={`تاریخ پیشنهادی اقدام`}
+                // helperText={Texts.common.selectSearchDate}
+                // onChange={(value) => {
+                //   setDateFilter(value);
+                //   setPaginationModel((prev) => ({ ...prev, page: 0 }));
+                // }}
+                // slotProps={{
+                //   actionBar: { actions: ["accept", "cancel", "clear"] },
+                // }}
               />
             </div>
             <div
@@ -173,6 +189,7 @@ const SafetyFinding = () => {
               fullWidth
               color="success"
               variant="contained"
+              type="submit"
               // disabled={isLoading}
               // onClick={handleClickOnSave}
             >
