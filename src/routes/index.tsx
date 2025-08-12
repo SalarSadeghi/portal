@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import {
   Route,
   BrowserRouter as Router,
@@ -6,44 +6,33 @@ import {
   useLocation,
 } from "react-router-dom";
 import ErrorBoundary from "../pages/errorBoundary/ErrorBoundary";
-import DashboardLayout from "../layout/dashboardLayout/DashboardLayout";
+// import DashboardLayout from "../layout/dashboardLayout/DashboardLayout";
 import ProtectedRoute from "./auth/ProtectedRoute";
-import Home from "../pages/home.tsx/Home";
+// import Home from "../pages/home.tsx/Home";
 import AuthRoutes from "./auth/AuthRoute";
 import AdminRoutes from "./admin/AdminRoute";
 import UserRoutes from "./user/UserRoute";
 import NotFound from "../pages/notFound/NotFound";
-import HygieneFinding from "../components/pages/officeAutomation/hygieneFinding/HygieneFinding";
-import SafetyFinding from "../components/pages/officeAutomation/safetyFinding/SafetyFinding";
+import FallbackLazyLoad from "@/components/lazyLoad/FallbackLazyLoad";
+// import DashboardLayout from "@/layout/dashboardLayout/DashboardLayout";
+// import LazyLoad from "../components/lazyLoad/LazyLoad";
+const DashboardLayout = React.lazy(
+  () => import("@/layout/dashboardLayout/DashboardLayout")
+);
+const Home = React.lazy(() => import("@/pages/home.tsx/Home"));
 
 const AppRouter = () => {
   return (
     <Router>
-      <Suspense fallback={<h1>Loading...</h1>}>
+      <Suspense fallback={<FallbackLazyLoad />}>
         <ErrorBoundary>
           <Routes>
             <Route path="/" element={<DashboardLayout />}>
               <Route
                 index
                 element={
-                  //<ProtectedRoute>
-                  <Home />
-                  //</ProtectedRoute>
-                }
-              />
-              <Route
-                path="/safety-finding-form"
-                element={
                   <ProtectedRoute>
-                    <SafetyFinding />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/hygiene-finding-form"
-                element={
-                  <ProtectedRoute>
-                    <HygieneFinding />
+                    <Home />
                   </ProtectedRoute>
                 }
               />
@@ -54,7 +43,15 @@ const AppRouter = () => {
               {/* User Routes */}
               <Route path="/user/*" element={<UserRoutes />} />
             </Route>
-            <Route path="*" element={<NotFound />} /> {/* 404 Not Found */}
+            <Route
+              path="*"
+              element={
+                <ProtectedRoute>
+                  <NotFound />
+                </ProtectedRoute>
+              }
+            />{" "}
+            {/* 404 Not Found */}
           </Routes>
         </ErrorBoundary>
       </Suspense>

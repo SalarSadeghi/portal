@@ -90,10 +90,12 @@ const SafetyFinding = () => {
                 control={control}
                 label="موضوع یافته"
                 options={
-                  safetyFindingsSubjects?.map((s) => ({
-                    id: s.entityCode,
-                    label: s.name,
-                  })) || []
+                  Array.isArray(safetyFindingsSubjects)
+                    ? safetyFindingsSubjects?.map((s) => ({
+                        id: s.entityCode,
+                        label: s.name,
+                      }))
+                    : []
                 }
               />
             </div>
@@ -154,10 +156,14 @@ const SafetyFinding = () => {
                   control={control}
                   label="اولویت"
                   name="priority"
-                  options={safetyFindingsPriority?.map((c) => ({
-                    id: c.entityCode,
-                    label: c.name,
-                  }))}
+                  options={
+                    Array.isArray(safetyFindingsPriority)
+                      ? safetyFindingsPriority?.map((c) => ({
+                          id: c.entityCode,
+                          label: c.name,
+                        }))
+                      : []
+                  }
                 />
               </div>
               <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
@@ -166,10 +172,12 @@ const SafetyFinding = () => {
                   label="یافته‌ها"
                   name="finded"
                   options={
-                    safetyFindingsData?.map((c) => ({
-                      id: c.entityCode,
-                      label: c.name,
-                    })) || []
+                    Array.isArray(safetyFindingsData)
+                      ? safetyFindingsData?.map((c) => ({
+                          id: c.entityCode,
+                          label: c.name,
+                        }))
+                      : []
                   }
                 />
               </div>

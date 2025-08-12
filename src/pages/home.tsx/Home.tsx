@@ -7,10 +7,10 @@ interface ICard {
 }
 
 const CardOptions: ICard[] = [
-  { title: "فرم گزارش و اصلاح یافته‌های ایمنی", href: "safety-finding-form" },
+  { title: "فرم گزارش و اصلاح یافته‌های ایمنی", href: "user/safety-finding-form" },
   {
     title: "فرم یافته‌های بهداشت حرفه‌ای و ارگونومی",
-    href: "hygiene-finding-form",
+    href: "user/hygiene-finding-form",
   },
 ];
 

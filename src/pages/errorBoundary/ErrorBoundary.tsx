@@ -1,4 +1,4 @@
-
+import { Button } from "@mui/material";
 import React from "react";
 import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
 
@@ -6,17 +6,35 @@ import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
 const FallbackComponent = ({ error }: { error: Error }) => {
   if (import.meta.env.MODE === "development") {
     return (
-      <div role="alert">
-        <h2>Something went wrong:</h2>
+      <div
+        className="flex justify-center items-center h-screen gap-4 flex-row-reverse"
+        role="alert"
+      >
+        <h2>Something went wrong</h2>
         <pre>{error.message}</pre>
-        <button onClick={() => window.location.reload()}>Try Again</button>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => window.location.reload()}
+        >
+          Try Again
+        </Button>
       </div>
     );
   } else {
     return (
-      <div role="alert">
-        <h2>Something went wrong:</h2>
-        <button onClick={() => window.location.reload()}>Try Again</button>
+      <div
+        className="flex justify-center items-center h-screen gap-4 flex-row-reverse"
+        role="alert"
+      >
+        <h2>Something went wrong</h2>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={() => window.location.reload()}
+        >
+          Try Again
+        </Button>
       </div>
     );
   }

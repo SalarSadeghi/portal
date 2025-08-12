@@ -2,9 +2,9 @@
 
 function FallbackLazyLoad() {
   return (
-    <div className="flex h-[100vh] w-full justify-center items-center">
+    <div className="flex h-[100vh] w-full justify-center items-center gap-4">
       {/* <InfinitySpin color="#1976d2"/> */}
-      Loading...
+      <span> لطفا صبر کنید ...</span>
     </div>
   );
 }
