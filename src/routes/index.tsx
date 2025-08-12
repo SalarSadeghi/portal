@@ -1,5 +1,10 @@
-import { Suspense } from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Suspense, useEffect } from "react";
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import ErrorBoundary from "../pages/errorBoundary/ErrorBoundary";
 import DashboardLayout from "../layout/dashboardLayout/DashboardLayout";
 import ProtectedRoute from "./auth/ProtectedRoute";
@@ -9,7 +14,7 @@ import AdminRoutes from "./admin/AdminRoute";
 import UserRoutes from "./user/UserRoute";
 import NotFound from "../pages/notFound/NotFound";
 import HygieneFinding from "../components/pages/officeAutomation/hygieneFinding/HygieneFinding";
-import SafetyFinding from "../components/pages/officeAutomation/SafetyFinding";
+import SafetyFinding from "../components/pages/officeAutomation/safetyFinding/SafetyFinding";
 
 const AppRouter = () => {
   return (
@@ -21,15 +26,26 @@ const AppRouter = () => {
               <Route
                 index
                 element={
+                  //<ProtectedRoute>
+                  <Home />
+                  //</ProtectedRoute>
+                }
+              />
+              <Route
+                path="/safety-finding-form"
+                element={
                   <ProtectedRoute>
-                    <Home />
+                    <SafetyFinding />
                   </ProtectedRoute>
                 }
               />
-              <Route path="/safety-finding-form" element={<SafetyFinding />} />
               <Route
                 path="/hygiene-finding-form"
-                element={<HygieneFinding />}
+                element={
+                  <ProtectedRoute>
+                    <HygieneFinding />
+                  </ProtectedRoute>
+                }
               />
               {/* Auth Routes */}
               <Route path="/auth/*" element={<AuthRoutes />} />

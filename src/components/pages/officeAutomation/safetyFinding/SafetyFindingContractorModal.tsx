@@ -7,7 +7,9 @@ import {
   type GridColDef,
 } from "@mui/x-data-grid";
 
-const HygieneFindingContractorModal = () => {
+import React from "react";
+
+const SafetyFindingContractorModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
   const columns: GridColDef[] = [
@@ -36,7 +38,7 @@ const HygieneFindingContractorModal = () => {
     //   },
     // },
     {
-      field: "subject",
+      field: "contractorName",
       headerName: "مشخصات پیمانکار",
       align: "center",
       headerAlign: "center",
@@ -47,8 +49,8 @@ const HygieneFindingContractorModal = () => {
     },
   ];
   const rows = [
-    { id: 1, subject: "سالار صادقی" },
-    { id: 2, subject: "علی رحیمی" },
+    { id: 1, contractorName: "سالار صادقی" },
+    { id: 2, contractorName: "علی رحیمی" },
   ];
   return (
     <Modal
@@ -99,4 +101,4 @@ const HygieneFindingContractorModal = () => {
   );
 };
 
-export default HygieneFindingContractorModal;
+export default SafetyFindingContractorModal;

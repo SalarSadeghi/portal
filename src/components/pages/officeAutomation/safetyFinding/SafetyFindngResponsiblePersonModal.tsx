@@ -1,13 +1,13 @@
 import { Modal } from "../../../ui/Modal";
 import { modalStore } from "../../../../store/ModalStore";
 import DataGridTable from "../../../ui/DataGridTable";
+import type { GridColDef } from "@mui/x-data-grid";
 import { isDesktop } from "../../../../utils";
-import {
-  GRID_CHECKBOX_SELECTION_COL_DEF,
-  type GridColDef,
-} from "@mui/x-data-grid";
+import { useQuery } from "react-query";
+import { getSafetyFindingUnitManagers } from "../../../../api/officeAutomation/safetyFinding";
+import { RQKeys } from "../../../../constant/RQKeys";
 
-const HygieneFindingContractorModal = () => {
+const SafetyFindngResponsiblePersonModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
   const columns: GridColDef[] = [
@@ -36,8 +36,8 @@ const HygieneFindingContractorModal = () => {
     //   },
     // },
     {
-      field: "subject",
-      headerName: "مشخصات پیمانکار",
+      field: "unitManager",
+      headerName: "مسئول واحد",
       align: "center",
       headerAlign: "center",
       minWidth: 180,
@@ -46,10 +46,11 @@ const HygieneFindingContractorModal = () => {
       filterable: false,
     },
   ];
-  const rows = [
-    { id: 1, subject: "سالار صادقی" },
-    { id: 2, subject: "علی رحیمی" },
-  ];
+  const { data: safetyFindingsUnitManagers } = useQuery(
+    RQKeys.officeAutomation.saftyFinding.getSafetyFindingUnitManagers(),
+    () => getSafetyFindingUnitManagers()
+  );
+
   return (
     <Modal
       width="80%"
@@ -58,7 +59,7 @@ const HygieneFindingContractorModal = () => {
       onToggle={() => {
         changeIsOpenModal(false);
       }}
-      title={"نام پیمانکار"}
+      title={"مسئول واحد"}
     >
       <div className="flex flex-col gap-4 p-4">
         <div>
@@ -72,7 +73,7 @@ const HygieneFindingContractorModal = () => {
                   maxWidth: undefined,
                 }),
               })),
-              rows: rows || [],
+              rows: [],
               // loading: isLoading,
               pageSizeOptions: [5, 10, 25, 50, 100],
               // paginationModel,
@@ -99,4 +100,4 @@ const HygieneFindingContractorModal = () => {
   );
 };
 
-export default HygieneFindingContractorModal;
+export default SafetyFindngResponsiblePersonModal;

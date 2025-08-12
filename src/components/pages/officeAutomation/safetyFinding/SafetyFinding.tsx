@@ -1,40 +1,34 @@
-import { Button, InputAdornment } from "@mui/material";
-import CustomTextInput from "../../../inputs/CustomTextInput";
-import { isDesktop } from "../../../../utils";
-import { Controller, useForm, type SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { HygieneFindingFormSchema } from "../../../../validations/officeAutomation/HygieneFinding";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import CustomComboBox from "../../../inputs/CustomComboBox";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SafetyFindingFormSchema } from "../../../../validations/officeAutomation/SafetyFinding";
+import CustomTextInput from "../../../inputs/CustomTextInput";
+import { Button, InputAdornment, useTheme } from "@mui/material";
+import { isDesktop } from "../../../../utils";
 import CustomCheckboxInput from "../../../inputs/CustomCheckboxInput";
 import { DatePicker } from "../../../inputs/date/DatePicker";
-import { useState } from "react";
 import { modalStore } from "../../../../store/ModalStore";
-import HygieneFindingRegionModal from "./HygieneFindingRegionModal";
-import HygieneFindingResponsiblePersonModal from "./HygieneFindingResponsiblePersonModal";
-import HygieneFindingContractorModal from "./HygieneFindingContractorModal";
+import SafetyFindingRegionModal from "./SafetyFindingRegionModal";
+import SafetyFindngResponsiblePersonModal from "./SafetyFindngResponsiblePersonModal";
+import SafetyFindingContractorModal from "./SafetyFindingContractorModal";
+import { useQuery } from "react-query";
+import { RQKeys } from "../../../../constant/RQKeys";
 import {
- 
-  type PriorityOption,
-} from "../../../../api/officeAutomation/hygienFinding";
+  getSafetyFindingPriority,
+  getSafetyFindings,
+  getSafetyFindingSubjects,
+} from "../../../../api/officeAutomation/safetyFinding";
 
-interface FormValues {
-  priority: PriorityOption;
-  correction: boolean;
-  description: string;
-  region: string;
-  contractor: string;
-  date: string;
-}
-enum ModalKeys {
-  REGION = "REGION",
-  RESPONSIBLE_PERSON = "RESPONSIBLE_PERSON",
-  CONTRACTOR_NAME = "CONTRACTOR_NAME",
-}
+interface FormValues {}
 const defaultValues = {};
-const HygieneFinding = () => {
+enum ModalKeys {
+  REGION = "SAFETY_FINDING_REGION",
+  RESPONSIBLE_PERSON = "SAFETY_FINDING_RESPONSIBLE_PERSON",
+  CONTRACTOR_NAME = "SAFETY_FINDING_CONTRACTOR_NAME",
+}
+
+const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
-  const [date, setDate] = useState<Date>();
-  const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
   const {
     handleSubmit,
     control,
@@ -43,17 +37,34 @@ const HygieneFinding = () => {
     setValue,
     formState: { errors },
   } = useForm<FormValues | any>({
-    resolver: yupResolver(HygieneFindingFormSchema),
+    // resolver: yupResolver(SafetyFindingFormSchema),
     defaultValues,
   });
+
+  const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
 
   const handleModalClick = (key: ModalKeys) => {
     changeIsOpenModal(true);
     changeKey(key);
   };
 
+  const { data: safetyFindingsSubjects } = useQuery(
+    RQKeys.officeAutomation.saftyFinding.getSafetyFindingSubjects(),
+    () => getSafetyFindingSubjects()
+  );
+
+  const { data: safetyFindingsPriority } = useQuery(
+    RQKeys.officeAutomation.saftyFinding.getSafetyFindingPriority(),
+    () => getSafetyFindingPriority()
+  );
+
+  const { data: safetyFindingsData } = useQuery(
+    RQKeys.officeAutomation.saftyFinding.getSafetyFindings(),
+    () => getSafetyFindings()
+  );
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("submit called", data);
+    console.log("submit called");
   };
 
   return (
@@ -64,7 +75,7 @@ const HygieneFinding = () => {
             سیستم جامع اقدامات اصلاحی
           </h1>
           <h3 className="text-white text-center text-base">
-            فرم گزارش و اصلاح یافته‌های بهداشت حرفه‌ای و ارگونومی
+            فرم گزارش و اصلاح یافته‌های ایمنی
           </h3>
         </div>
         <div>
@@ -72,6 +83,21 @@ const HygieneFinding = () => {
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
+            {/* subject */}
+            <div className={``}>
+              <CustomComboBox
+                name="subject"
+                control={control}
+                label="موضوع یافته"
+                options={
+                  safetyFindingsSubjects?.map((s) => ({
+                    id: s.entityCode,
+                    label: s.name,
+                  })) || []
+                }
+              />
+            </div>
+            {/* region */}
             <div>
               <CustomTextInput
                 control={control}
@@ -81,10 +107,10 @@ const HygieneFinding = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button
+                        onClick={() => handleModalClick(ModalKeys.REGION)}
                         variant="contained"
                         color="primary"
                         size="small"
-                        onClick={() => handleModalClick(ModalKeys.REGION)}
                       >
                         انتخاب
                       </Button>
@@ -93,7 +119,7 @@ const HygieneFinding = () => {
                 }}
               />
             </div>
-
+            {/* responsble person */}
             <div>
               <CustomTextInput
                 control={control}
@@ -103,12 +129,12 @@ const HygieneFinding = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <Button
-                        onClick={() =>
-                          handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
-                        }
                         variant="contained"
                         color="primary"
                         size="small"
+                        onClick={() =>
+                          handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
+                        }
                       >
                         انتخاب
                       </Button>
@@ -117,7 +143,7 @@ const HygieneFinding = () => {
                 }}
               />
             </div>
-
+            {/* priority and findings */}
             <div
               className={`flex ${
                 isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
@@ -125,21 +151,30 @@ const HygieneFinding = () => {
             >
               <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                 <CustomComboBox
-                  options={[]}
                   control={control}
-                  label="نوع اولویت"
+                  label="اولویت"
                   name="priority"
+                  options={safetyFindingsPriority?.map((c) => ({
+                    id: c.entityCode,
+                    label: c.name,
+                  }))}
                 />
               </div>
               <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                 <CustomComboBox
                   control={control}
-                  label="عوامل زیان‌آور"
+                  label="یافته‌ها"
                   name="finded"
+                  options={
+                    safetyFindingsData?.map((c) => ({
+                      id: c.entityCode,
+                      label: c.name,
+                    })) || []
+                  }
                 />
               </div>
             </div>
-
+            {/* contractor  name*/}
             <div>
               <CustomTextInput
                 control={control}
@@ -163,7 +198,7 @@ const HygieneFinding = () => {
                 }}
               />
             </div>
-
+            {/* description */}
             <div>
               <CustomTextInput
                 multiline
@@ -173,7 +208,7 @@ const HygieneFinding = () => {
                 label="شرح یافته"
               />
             </div>
-
+            {/* suggestion work */}
             <div>
               <CustomTextInput
                 multiline
@@ -183,35 +218,27 @@ const HygieneFinding = () => {
                 label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
               />
             </div>
-
+            {/* tme and checkbox */}
             <div
               className={`flex ${
                 isDesktopMode ? "flex-row gap-4" : "flex-col gap-4 items-center"
               }`}
             >
               <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                <Controller
-                  control={control}
-                  name="date"
-                  render={({ field, fieldState }) => (
-                    <DatePicker
-                      {...field}
-                      className="w-full"
-                      // disableFuture
-                      // openTo="day"
-                      value={date}
-                      label={`تاریخ پیشنهادی اقدام`}
-                      // helperText={Texts.common.selectSearchDate}
-                      onChange={(value) => {
-                        value ? setDate(value) : setDate(undefined);
-                      }}
-                      slotProps={{
-                        actionBar: { actions: ["accept", "cancel", "clear"] },
-                      }}
-                      error={!!fieldState.error}
-                      helperText={fieldState?.error?.message}
-                    />
-                  )}
+                <DatePicker
+                  className="w-full"
+                  // disableFuture
+                  // openTo="day"
+                  // value={dateFilter as unknown as Date}
+                  label={`تاریخ پیشنهادی اقدام`}
+                  // helperText={Texts.common.selectSearchDate}
+                  // onChange={(value) => {
+                  //   setDateFilter(value);
+                  //   setPaginationModel((prev) => ({ ...prev, page: 0 }));
+                  // }}
+                  // slotProps={{
+                  //   actionBar: { actions: ["accept", "cancel", "clear"] },
+                  // }}
                 />
               </div>
               <div
@@ -226,6 +253,7 @@ const HygieneFinding = () => {
                 />
               </div>
             </div>
+
             <div className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}>
               <Button
                 fullWidth
@@ -242,16 +270,16 @@ const HygieneFinding = () => {
         </div>
       </div>
       {isOpenModal && modalKey === ModalKeys.REGION && (
-        <HygieneFindingRegionModal />
+        <SafetyFindingRegionModal />
       )}
       {isOpenModal && modalKey === ModalKeys.RESPONSIBLE_PERSON && (
-        <HygieneFindingResponsiblePersonModal />
+        <SafetyFindngResponsiblePersonModal />
       )}
       {isOpenModal && modalKey === ModalKeys.CONTRACTOR_NAME && (
-        <HygieneFindingContractorModal />
+        <SafetyFindingContractorModal />
       )}
     </>
   );
 };
 
-export default HygieneFinding;
+export default SafetyFinding;
