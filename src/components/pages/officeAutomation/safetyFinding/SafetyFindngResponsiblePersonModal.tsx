@@ -73,13 +73,13 @@ const SafetyFindngResponsiblePersonModal = () => {
                   maxWidth: undefined,
                 }),
               })),
-              rows: [],
+              rows: safetyFindingsUnitManagers?.list || [],
               // loading: isLoading,
               pageSizeOptions: [5, 10, 25, 50, 100],
               // paginationModel,
               paginationMode: "server",
               // onPaginationModelChange: setPaginationModel,
-              rowCount: 0, // zero is very crucial!
+              rowCount: safetyFindingsUnitManagers?.total ?? 0, // zero is very crucial!
               disableEval: true,
               disableColumnMenu: !isDesktopMode,
               disableVirtualization: true,

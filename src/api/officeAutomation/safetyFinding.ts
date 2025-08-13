@@ -1,20 +1,39 @@
-import axiosInstance, { USER_API_URL } from "../axios/axios";
+import axiosInstance, { USER_API_URL, PaginatedResponse } from "../axios/axios";
 
 const SAFTY_FINDING_URL = `${USER_API_URL}/hse/safety-findings`;
+
+export enum RoleIdByGroupId {
+  ROLE_SAFETY_FINDINGS = "ROLE_SAFETY_FINDINGS",
+  ROLE_PROFESSIONAL_HEALTH = "ROLE_PROFESSIONAL_HEALTH",
+}
+
+interface GetHasRoleIdByGroupId {
+  hasRole: boolean;
+}
+
+interface SafetyFindingsCommitteeDto {
+  id: string;
+  committeeCode: string;
+  committeeName: string;
+  unitName?: string;
+}
 
 export interface PriorityOption {
   entityCode: number; // ID
   name: string; // Display name
+  id: string;
 }
 
 export interface SubjectOption {
   entityCode: number;
   name: string;
+  id: string;
 }
 
 export interface SaftyFindings {
   entityCode: number;
   name: string;
+  id: string;
 }
 
 export interface UnitManager {
@@ -44,8 +63,27 @@ export const getSafetyFindings = async () => {
 };
 
 export const getSafetyFindingUnitManagers = async () => {
-  const res = await axiosInstance.get<UnitManager[]>(
+  const res = await axiosInstance.get<PaginatedResponse<UnitManager>>(
     `${SAFTY_FINDING_URL}/unitManagers`
   );
+  return res.data;
+};
+
+export const getHasRoleIdByGroupId = async (role: RoleIdByGroupId) => {
+  const res = await axiosInstance.get<GetHasRoleIdByGroupId>(
+    `${SAFTY_FINDING_URL}/hasRole`,
+    {
+      params: {
+        hasRole: role,
+      },
+    }
+  );
+  return res.data;
+};
+
+export const getSaftyFindingAllregion = async () => {
+  const res = await axiosInstance.get<
+    PaginatedResponse<SafetyFindingsCommitteeDto>
+  >(`${SAFTY_FINDING_URL}/committees`);
   return res.data;
 };

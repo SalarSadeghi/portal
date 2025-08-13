@@ -5,6 +5,8 @@ export const RQKeys = {
       getSafetyFindingPriority: () => ["safetyFindingPriority"],
       getSafetyFindingUnitManagers: () => ["safetyFindingUnitManagers"],
       getSafetyFindings: () => ["SafetyFindingsData"],
+      getHasRoleIdByGroupId: (role: string) => ["hasRoleByGroupId", role],
+      getSaftyFindingAllregion: () => ["saftyFindingAllregion"],
     },
   },
 };
