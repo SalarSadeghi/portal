@@ -4,19 +4,24 @@ import DataGridTable from "../../../ui/DataGridTable";
 import { isDesktop } from "../../../../utils";
 import {
   GRID_CHECKBOX_SELECTION_COL_DEF,
-  GridRowSelectionModel,
+  // GridRowSelectionModel,
   type GridColDef,
 } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
 import { RQKeys } from "@/constant/RQKeys";
-import { getSaftyFindingAllregion } from "@/api/officeAutomation/safetyFinding";
+import {
+  getSaftyFindingAllregion,
+  SafetyFindingsCommitteeDto,
+} from "@/api/officeAutomation/safetyFinding";
 import { useState } from "react";
-import { Checkbox } from "@mui/material";
+import { Button, Checkbox } from "@mui/material";
+import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
 
 const SafetyFindingRegionModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
-  const [selectedRow, setSelectedRow] = useState<GridRowSelectionModel>();
+  const [selectedRow, setSelectedRow] = useState<SafetyFindingsCommitteeDto>();
+  const { changeSelectedRegion } = safetyFindingStore();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
@@ -28,23 +33,20 @@ const SafetyFindingRegionModal = () => {
       minWidth: 70,
       cellClassName: "dataGridCheckBoxContainer",
       renderCell: (params) => {
-        console.log(params);
-        const rowId = Number(params.id);
-        // return (
-        //   <Checkbox
-        //     color="secondary"
-        //     // sx={{ color: theme.palette.secondary.main }}
-        //     checked={selectedRow?.includes(rowId)}
-        //     onChange={(event) => {
-        //       if (event?.target?.checked) {
-        //         selectedRow([...selectedRow, rowId]);
-        //       } else {
-        //         selectedRow(selectedRow?.filter((item) => item !== rowId));
-        //       }
-        //     }}
-        //   />
-        // );
-        return 0;
+        const rowId = params.id;
+        return (
+          <Checkbox
+            color="primary"
+            checked={selectedRow?.id === rowId}
+            onChange={(event) => {
+              if (event?.target?.checked) {
+                setSelectedRow(params.row);
+              } else {
+                setSelectedRow(undefined);
+              }
+            }}
+          />
+        );
       },
     },
     {
@@ -69,10 +71,23 @@ const SafetyFindingRegionModal = () => {
     },
   ];
 
+  const rows = [
+    {
+      unitName: "aaa",
+      id: "1",
+    },
+    { unitName: "bbb", id: "9" },
+  ];
   const { data: allRegionData, isLoading } = useQuery(
     RQKeys.officeAutomation.saftyFinding.getSaftyFindingAllregion(),
     () => getSaftyFindingAllregion()
   );
+  const handleSelectRow = () => {
+    if (selectedRow) {
+      changeSelectedRegion(selectedRow);
+      changeIsOpenModal(false);
+    }
+  };
 
   return (
     <Modal
@@ -84,7 +99,7 @@ const SafetyFindingRegionModal = () => {
       }}
       title={"نام ناحیه / نام واحد"}
     >
-      <div className="flex flex-col gap-4 p-4">
+      <div className="flex flex-col gap-8 p-4">
         <div>
           <DataGridTable
             hasToolbar={!isDesktopMode}
@@ -96,7 +111,7 @@ const SafetyFindingRegionModal = () => {
                   maxWidth: undefined,
                 }),
               })),
-              rows: allRegionData?.list || [],
+              rows: rows || allRegionData?.list || [],
               loading: isLoading,
               pageSizeOptions: [5, 10, 25, 50, 100],
               paginationModel,
@@ -110,13 +125,25 @@ const SafetyFindingRegionModal = () => {
               disableColumnFilter: true,
               rowHeight: 80,
               checkboxSelection: true,
+              disableMultipleRowSelection: true,
               // rowSelectionModel: selectedRow,
+              // onRowSelectionModelChange: setSelectedRow,
               // onRowSelectionModelChange: (newSelection) => {
-              //   const lastSelected = newSelection.slice(-1);
-              //   setSelectedRow(lastSelected);
+              //   console.log(newSelection);
+              //   // const lastSelected = newSelection.slice(-1);
+              //   // setSelectedRow(lastSelected);
               // },
             }}
           />
+        </div>
+        <div className="w-full flex justify-end">
+          <Button
+            disabled={!selectedRow}
+            onClick={handleSelectRow}
+            variant="contained"
+          >
+            ثبت
+          </Button>
         </div>
       </div>
     </Modal>

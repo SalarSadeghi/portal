@@ -11,7 +11,7 @@ interface GetHasRoleIdByGroupId {
   hasRole: boolean;
 }
 
-interface SafetyFindingsCommitteeDto {
+export interface SafetyFindingsCommitteeDto {
   id: string;
   committeeCode: string;
   committeeName: string;

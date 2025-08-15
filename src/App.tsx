@@ -1,6 +1,7 @@
 import AppRouter from "./routes";
 import CustomThemeProvider from "./theme/CustomThemeProvider";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { SnackbarProvider } from "notistack";
 
 function App() {
   const queryClient = new QueryClient({
@@ -16,7 +17,13 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <CustomThemeProvider>
-          <AppRouter />
+          <SnackbarProvider
+            maxSnack={3}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            autoHideDuration={3000}
+          >
+            <AppRouter />
+          </SnackbarProvider>
         </CustomThemeProvider>
       </QueryClientProvider>
     </>

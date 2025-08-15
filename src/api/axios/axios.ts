@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getTokenFromStorage } from "../../utils";
 
-export const API_URL = "api";
+export const API_URL = "";
 export const VERSION_URL = "v1";
 export const USER_API_URL = `${API_URL}/${VERSION_URL}/user`;
 export const ADMIN_API_URL = `${API_URL}/${VERSION_URL}/admin`;

@@ -7,9 +7,9 @@ function Header() {
   const location = useLocation();
   return (
     <Paper
-      style={{ backgroundColor: "#f1f5f9" }}
+      // style={{ backgroundColor: "#f1f5f9" }}
       square
-      className="h-16 w-full bg-slate-100 dark:bg-dark-background dark:text-dark-text  dark:shadow-none dark:border-b dark:border-b-dark-border"
+      className="h-16 w-full dark:bg-dark-background dark:text-dark-text  dark:shadow-none dark:border-b dark:border-b-dark-border"
     >
       <div className="flex items-center justify-between h-full px-4">
         <div className="flex gap-4">

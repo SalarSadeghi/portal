@@ -1,8 +1,8 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import DescriptionIcon from "@mui/icons-material/Description";
-import LayersIcon from "@mui/icons-material/Layers";
+// import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+// import BarChartIcon from "@mui/icons-material/BarChart";
+// import DescriptionIcon from "@mui/icons-material/Description";
+// import LayersIcon from "@mui/icons-material/Layers";
 
 // Sidebar Items
 export interface SidebarItem {
@@ -12,18 +12,18 @@ export interface SidebarItem {
   href?: string;
   children?: SidebarItem[];
 }
-const ReportItems: SidebarItem[] = [
-  {
-    kind: "item",
-    title: "Sales",
-    icon: <DescriptionIcon />,
-  },
-  {
-    kind: "item",
-    title: "Traffic",
-    icon: <DescriptionIcon />,
-  },
-];
+// const ReportItems: SidebarItem[] = [
+//   {
+//     kind: "item",
+//     title: "Sales",
+//     icon: <DescriptionIcon />,
+//   },
+//   {
+//     kind: "item",
+//     title: "Traffic",
+//     icon: <DescriptionIcon />,
+//   },
+// ];
 
 export const Items: SidebarItem[][] = [
   [

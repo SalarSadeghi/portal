@@ -1,9 +1,9 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense } from "react";
 import {
   Route,
   BrowserRouter as Router,
   Routes,
-  useLocation,
+  // useLocation,
 } from "react-router-dom";
 import ErrorBoundary from "../pages/errorBoundary/ErrorBoundary";
 // import DashboardLayout from "../layout/dashboardLayout/DashboardLayout";

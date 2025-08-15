@@ -1,5 +1,7 @@
 {
-  "common": {},
+  "common": {
+    "noDataFoundMSG": "داده‌ای برای نمایش یافت نشد."
+  },
   "pages": {},
   "validation": {
     "required": "این فیلد اجباری است"

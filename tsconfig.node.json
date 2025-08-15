@@ -31,7 +31,5 @@
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "vite.config"
-  ]
+  "include": ["vite.config.ts", "vitest.config.ts"]
 }

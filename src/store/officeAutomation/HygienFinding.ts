@@ -1,19 +1,19 @@
-import { produce } from "immer";
-import { create } from "zustand";
+// // import { produce } from "immer";
+// import { create } from "zustand";
 
-interface StoreState {
+// interface StoreState {
 
-}
+// }
 
-const store = create<StoreState>((set) => ({
+// const store = create<StoreState>((set) => ({
 
-//   toggleSidebar: (isOpen: boolean) =>
-//     set(
-//       produce((draft) => {
-//         draft.isSidebarOpen = !isOpen;
-//       }),
-//       false
-//     ),
-}));
+// //   toggleSidebar: (isOpen: boolean) =>
+// //     set(
+// //       produce((draft) => {
+// //         draft.isSidebarOpen = !isOpen;
+// //       }),
+// //       false
+// //     ),
+// }));
 
-export const hygienFindingStore = store;
+// export const hygienFindingStore = store;

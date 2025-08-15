@@ -3,7 +3,7 @@ import { modalStore } from "../../../../store/ModalStore";
 import DataGridTable from "../../../ui/DataGridTable";
 import { isDesktop } from "../../../../utils";
 import {
-  GRID_CHECKBOX_SELECTION_COL_DEF,
+  // GRID_CHECKBOX_SELECTION_COL_DEF,
   type GridColDef,
 } from "@mui/x-data-grid";
 

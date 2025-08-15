@@ -1,5 +1,5 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+// import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, InputAdornment } from "@mui/material";
 import SafetyFindingRegionModal from "./SafetyFindingRegionModal";
 import SafetyFindngResponsiblePersonModal from "./SafetyFindngResponsiblePersonModal";
@@ -17,10 +17,13 @@ import FallbackLazyLoad from "@/components/lazyLoad/FallbackLazyLoad";
 import { RQKeys } from "@/constant/RQKeys";
 import { isDesktop } from "@/utils";
 import CustomTextInput from "@/components/inputs/CustomTextInput";
-import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
+// import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
 import CustomComboBox from "@/components/inputs/CustomComboBox";
 import CustomCheckboxInput from "@/components/inputs/CustomCheckboxInput";
 import { modalStore } from "@/store/ModalStore";
+import CardMessage from "@/components/ui/CardMessage";
+import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
+import { useEffect } from "react";
 
 interface FormValues {
   subject: { id: string; label: string };
@@ -32,7 +35,7 @@ interface FormValues {
   descriprion: string;
   suggestionWork: string;
 }
-const defaultValues = {};
+
 enum ModalKeys {
   REGION = "SAFETY_FINDING_REGION",
   RESPONSIBLE_PERSON = "SAFETY_FINDING_RESPONSIBLE_PERSON",
@@ -41,20 +44,23 @@ enum ModalKeys {
 
 const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
+
+  const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
+  const { selectedRegion } = safetyFindingStore();
+  const defaultValues = {
+    region: selectedRegion?.unitName || "",
+  };
   const {
     handleSubmit,
     control,
-    watch,
-    reset,
+    // watch,
+    // reset,
     setValue,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<FormValues | any>({
     // resolver: yupResolver(SafetyFindingFormSchema),
     defaultValues,
   });
-
-  const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
-
   const handleModalClick = (key: ModalKeys) => {
     changeIsOpenModal(true);
     changeKey(key);
@@ -94,6 +100,9 @@ const SafetyFinding = () => {
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log("submit called", data);
   };
+  useEffect(() => {
+    setValue("region", selectedRegion?.unitName);
+  }, [selectedRegion?.id]);
 
   {
     isLoadingHasRoleByIdGroupId && <FallbackLazyLoad />;
@@ -101,175 +110,181 @@ const SafetyFinding = () => {
 
   return (
     <>
-      {hasRoleIdByGroupId && !hasRoleIdByGroupId.hasRole ? (
-        <span>برو بیرون</span>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <div className="bg-[#13678a] flex flex-col gap-2 p-4 rounded-md">
-            <h1 className="text-white text-center text-2xl">
-              سیستم جامع اقدامات اصلاحی
-            </h1>
-            <h3 className="text-white text-center text-base">
-              فرم گزارش و اصلاح یافته‌های ایمنی
-            </h3>
-          </div>
+      {hasRoleIdByGroupId ? (
+        !true ? (
           <div>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              {/* subject */}
-              <div className={``}>
-                <CustomComboBox
-                  name="subject"
-                  control={control}
-                  label="موضوع یافته"
-                  options={
-                    Array.isArray(safetyFindingsSubjects)
-                      ? safetyFindingsSubjects?.map((s) => ({
-                          id: s.entityCode,
-                          label: s.name,
-                        }))
-                      : []
-                  }
-                />
-              </div>
-              {/* region */}
-              <div>
-                <CustomTextInput
-                  control={control}
-                  label="نام ناحیه / نام واحد"
-                  name="region"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button
-                          onClick={() => handleModalClick(ModalKeys.REGION)}
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                        >
-                          انتخاب
-                        </Button>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              {/* responsble person */}
-              <div>
-                <CustomTextInput
-                  control={control}
-                  label="مسئول واحد"
-                  name="region"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          onClick={() =>
-                            handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
-                          }
-                        >
-                          انتخاب
-                        </Button>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              {/* priority and findings */}
-              <div
-                className={`flex ${
-                  isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
-                }`}
+            <CardMessage message="دسترسی لازم برای انجام عملیات وجود ندارد." />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            <div className="bg-[#13678a] flex flex-col gap-2 p-4 rounded-md">
+              <h1 className="text-white text-center text-2xl">
+                سیستم جامع اقدامات اصلاحی
+              </h1>
+              <h3 className="text-white text-center text-base">
+                فرم گزارش و اصلاح یافته‌های ایمنی
+              </h3>
+            </div>
+            <div>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-4"
               >
-                <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+                {/* subject */}
+                <div className={``}>
                   <CustomComboBox
+                    name="subject"
                     control={control}
-                    label="اولویت"
-                    name="priority"
+                    label="موضوع یافته"
                     options={
-                      Array.isArray(safetyFindingsPriority)
-                        ? safetyFindingsPriority?.map((c) => ({
-                            id: c.entityCode,
-                            label: c.name,
+                      Array.isArray(safetyFindingsSubjects)
+                        ? safetyFindingsSubjects?.map((s) => ({
+                            id: s.entityCode,
+                            label: s.name,
                           }))
                         : []
                     }
                   />
                 </div>
-                <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                  <CustomComboBox
+                {/* region */}
+                <div>
+                  <CustomTextInput
                     control={control}
-                    label="یافته‌ها"
-                    name="finded"
-                    options={
-                      Array.isArray(safetyFindingsData)
-                        ? safetyFindingsData?.map((c) => ({
-                            id: c.entityCode,
-                            label: c.name,
-                          }))
-                        : []
-                    }
+                    label="نام ناحیه / نام واحد"
+                    name="region"
+                    disabled
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button
+                            onClick={() => handleModalClick(ModalKeys.REGION)}
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                          >
+                            انتخاب
+                          </Button>
+                        </InputAdornment>
+                      ),
+                    }}
                   />
                 </div>
-              </div>
-              {/* contractor  name*/}
-              <div>
-                <CustomTextInput
-                  control={control}
-                  label="نام پیمانکار"
-                  name="contractor"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="small"
-                          onClick={() =>
-                            handleModalClick(ModalKeys.CONTRACTOR_NAME)
-                          }
-                        >
-                          انتخاب
-                        </Button>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              {/* description */}
-              <div>
-                <CustomTextInput
-                  multiline
-                  rows={isDesktopMode ? 4 : 3}
-                  name="description"
-                  control={control}
-                  label="شرح یافته"
-                />
-              </div>
-              {/* suggestion work */}
-              <div>
-                <CustomTextInput
-                  multiline
-                  rows={isDesktopMode ? 4 : 3}
-                  name="description"
-                  control={control}
-                  label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
-                />
-              </div>
-              {/* tme and checkbox */}
-              <div
-                className={`flex ${
-                  isDesktopMode
-                    ? "flex-row gap-4"
-                    : "flex-col gap-4 items-center"
-                }`}
-              >
-                {/* <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+                {/* responsble person */}
+                <div>
+                  <CustomTextInput
+                    control={control}
+                    label="مسئول واحد"
+                    name="regionn"
+                    disabled
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={() =>
+                              handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
+                            }
+                          >
+                            انتخاب
+                          </Button>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                {/* priority and findings */}
+                <div
+                  className={`flex ${
+                    isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
+                  }`}
+                >
+                  <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+                    <CustomComboBox
+                      control={control}
+                      label="اولویت"
+                      name="priority"
+                      options={
+                        Array.isArray(safetyFindingsPriority)
+                          ? safetyFindingsPriority?.map((c) => ({
+                              id: c.entityCode,
+                              label: c.name,
+                            }))
+                          : []
+                      }
+                    />
+                  </div>
+                  <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+                    <CustomComboBox
+                      control={control}
+                      label="یافته‌ها"
+                      name="finded"
+                      options={
+                        Array.isArray(safetyFindingsData)
+                          ? safetyFindingsData?.map((c) => ({
+                              id: c.entityCode,
+                              label: c.name,
+                            }))
+                          : []
+                      }
+                    />
+                  </div>
+                </div>
+                {/* contractor  name*/}
+                <div>
+                  <CustomTextInput
+                    control={control}
+                    label="نام پیمانکار"
+                    disabled
+                    name="contractor"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="small"
+                            onClick={() =>
+                              handleModalClick(ModalKeys.CONTRACTOR_NAME)
+                            }
+                          >
+                            انتخاب
+                          </Button>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                {/* description */}
+                <div>
+                  <CustomTextInput
+                    multiline
+                    rows={isDesktopMode ? 4 : 3}
+                    name="description"
+                    control={control}
+                    label="شرح یافته"
+                  />
+                </div>
+                {/* suggestion work */}
+                <div>
+                  <CustomTextInput
+                    multiline
+                    rows={isDesktopMode ? 4 : 3}
+                    name="description"
+                    control={control}
+                    label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
+                  />
+                </div>
+                {/* tme and checkbox */}
+                <div
+                  className={`flex ${
+                    isDesktopMode
+                      ? "flex-row gap-4"
+                      : "flex-col gap-4 items-center"
+                  }`}
+                >
+                  {/* <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                 <DatePicker
                   className="w-full"
                   // disableFuture
@@ -286,36 +301,85 @@ const SafetyFinding = () => {
                   // }}
                 />
               </div> */}
-                <div
-                  className={`flex items-center ${
-                    isDesktopMode ? "w-1/2" : "w-full "
-                  }`}
-                >
-                  <CustomCheckboxInput
-                    control={control}
-                    name="correction"
-                    label="اصلاح در محل انجام پذیرفت"
-                  />
+                  <div
+                    className={`flex items-center ${
+                      isDesktopMode ? "w-1/2" : "w-full "
+                    }`}
+                  >
+                    <CustomCheckboxInput
+                      control={control}
+                      name="correction"
+                      label="اصلاح در محل انجام پذیرفت"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div
-                className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}
-              >
-                <Button
-                  fullWidth
-                  color="success"
-                  variant="contained"
-                  type="submit"
-                  // disabled={isLoading}
-                  // onClick={handleClickOnSave}
+                <div
+                  className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}
                 >
-                  ثبت
-                </Button>
-              </div>
-            </form>
+                  <Button
+                    fullWidth
+                    // sx={{ backgroundColor: "rgb(138, 81, 19)" }}
+                    color="success"
+                    variant="contained"
+                    type="submit"
+                    // disabled={isLoading}
+                    // onClick={handleClickOnSave}
+                  >
+                    ثبت
+                  </Button>
+                  {/* <Button
+                    fullWidth
+                    sx={{ backgroundColor: "rgb(19, 138, 129)" }}
+                    // color="success"
+                    variant="contained"
+                    type="submit"
+                    // disabled={isLoading}
+                    // onClick={handleClickOnSave}
+                  >
+                    ثبت
+                  </Button>
+                  <Button
+                    fullWidth
+                    sx={{ backgroundColor: "rgb(138,19,103)" }}
+                    // color="success"
+                    variant="contained"
+                    type="submit"
+                    // disabled={isLoading}
+                    // onClick={handleClickOnSave}
+                  >
+                    ثبت
+                  </Button>
+                  <Button
+                    fullWidth
+                    sx={{ backgroundColor: "rgb(240,240,240)" }}
+                    // color="success"
+                    variant="contained"
+                    type="submit"
+                    // disabled={isLoading}
+                    // onClick={handleClickOnSave}
+                  >
+                    ثبت
+                  </Button>
+
+                  <Button
+                    fullWidth
+                    sx={{ backgroundColor: "rgb(50,50,50)" }}
+                    // color="success"
+                    variant="contained"
+                    type="submit"
+                    // disabled={isLoading}
+                    // onClick={handleClickOnSave}
+                  >
+                    ثبت
+                  </Button> */}
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
+        )
+      ) : (
+        <CardMessage />
       )}
       {isOpenModal && modalKey === ModalKeys.REGION && (
         <SafetyFindingRegionModal />

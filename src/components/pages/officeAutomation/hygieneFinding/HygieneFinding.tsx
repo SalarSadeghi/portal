@@ -38,10 +38,10 @@ const HygieneFinding = () => {
   const {
     handleSubmit,
     control,
-    watch,
-    reset,
-    setValue,
-    formState: { errors },
+    // watch,
+    // reset,
+    // setValue,
+    // formState: { errors },
   } = useForm<FormValues | any>({
     resolver: yupResolver(HygieneFindingFormSchema),
     defaultValues,

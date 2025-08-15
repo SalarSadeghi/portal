@@ -16,7 +16,7 @@ const DashboardLayout = () => {
       )}
       <div className="flex flex-col grow">
         <Header />
-        <div className="p-4 grow overflow-y-auto">
+        <div className="p-4 bg-gradient-to-bl from-white via-slate-50 to-[rgb(240,240,240)] grow overflow-y-auto">
           <Outlet />
         </div>
       </div>

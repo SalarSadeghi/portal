@@ -3,7 +3,7 @@
 // import Tooltip from '@theme/overrides/Tooltip.tsx';
 // import Autocomplete from '@theme/overrides/Autocomplete.tsx';
 
-import { Container, createTheme, type ThemeOptions } from "@mui/material";
+import {  createTheme, type ThemeOptions } from "@mui/material";
 
 const themeOptions: ThemeOptions = {
   direction: "rtl",
@@ -29,7 +29,7 @@ const themeOptions: ThemeOptions = {
 
   typography: {
     allVariants: {
-      color: "#6B6B6B",
+      color: "rgb(50,50,50)",
       fontFamily: "inherit",
     },
   },
