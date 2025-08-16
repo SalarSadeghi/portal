@@ -3,8 +3,8 @@ import axiosInstance, { USER_API_URL, PaginatedResponse } from "../axios/axios";
 const SAFTY_FINDING_URL = `${USER_API_URL}/hse/safety-findings`;
 
 export enum RoleIdByGroupId {
-  ROLE_SAFETY_FINDINGS = "ROLE_SAFETY_FINDINGS",
-  ROLE_PROFESSIONAL_HEALTH = "ROLE_PROFESSIONAL_HEALTH",
+  ROLE_SAFETY_FINDINGS = "SAFETY_FINDINGS",
+  ROLE_PROFESSIONAL_HEALTH = "PROFESSIONAL_HEALTH",
 }
 
 interface GetHasRoleIdByGroupId {
@@ -41,6 +41,12 @@ export interface UnitManager {
   title: string;
 }
 
+export interface Contractor {
+  id: string;
+  entityCode: string;
+  contractorName: string;
+}
+
 export const getSafetyFindingSubjects = async () => {
   const res = await axiosInstance.get<SubjectOption[]>(
     `${SAFTY_FINDING_URL}/subjects`
@@ -57,14 +63,26 @@ export const getSafetyFindingPriority = async () => {
 
 export const getSafetyFindings = async () => {
   const res = await axiosInstance.get<SaftyFindings[]>(
-    `${SAFTY_FINDING_URL}/saftyFindings`
+    `${SAFTY_FINDING_URL}/safetyFindings`
   );
   return res.data;
 };
 
-export const getSafetyFindingUnitManagers = async () => {
+export const getSafetyFindingUnitManagers = async ({
+  page,
+  size,
+}: {
+  page: number;
+  size: number;
+}) => {
   const res = await axiosInstance.get<PaginatedResponse<UnitManager>>(
-    `${SAFTY_FINDING_URL}/unitManagers`
+    `${SAFTY_FINDING_URL}/unitManagers`,
+    {
+      params: {
+        page,
+        size,
+      },
+    }
   );
   return res.data;
 };
@@ -81,9 +99,39 @@ export const getHasRoleIdByGroupId = async (role: RoleIdByGroupId) => {
   return res.data;
 };
 
-export const getSaftyFindingAllregion = async () => {
+export const getSaftyFindingAllregion = async ({
+  page,
+  size,
+}: {
+  page: number;
+  size: number;
+}) => {
   const res = await axiosInstance.get<
     PaginatedResponse<SafetyFindingsCommitteeDto>
-  >(`${SAFTY_FINDING_URL}/committees`);
+  >(`${SAFTY_FINDING_URL}/committees`, {
+    params: {
+      page,
+      size,
+    },
+  });
+  return res.data;
+};
+
+export const getSafetyFindingContractors = async ({
+  page,
+  size,
+}: {
+  page: number;
+  size: number;
+}) => {
+  const res = await axiosInstance.get<PaginatedResponse<Contractor>>(
+    `${SAFTY_FINDING_URL}/contractors`,
+    {
+      params: {
+        page,
+        size,
+      },
+    }
+  );
   return res.data;
 };

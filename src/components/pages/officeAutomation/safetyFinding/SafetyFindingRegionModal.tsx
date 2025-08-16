@@ -15,18 +15,17 @@ import {
 } from "@/api/officeAutomation/safetyFinding";
 import { useState } from "react";
 import { Button, Checkbox } from "@mui/material";
-import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
+import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 
 const SafetyFindingRegionModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
   const [selectedRow, setSelectedRow] = useState<SafetyFindingsCommitteeDto>();
-  const { changeSelectedRegion } = safetyFindingStore();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
   });
-
+  const { changeSelectedRegion } = hygienFindingStore();
   const columns: GridColDef[] = [
     {
       ...GRID_CHECKBOX_SELECTION_COL_DEF,
@@ -54,7 +53,7 @@ const SafetyFindingRegionModal = () => {
       headerName: "ناحیه / واحد",
       align: "center",
       headerAlign: "center",
-      minWidth: 180,
+      minWidth: 250,
       resizable: true,
       sortable: true,
       filterable: false,
@@ -71,17 +70,21 @@ const SafetyFindingRegionModal = () => {
     },
   ];
 
-  const rows = [
-    {
-      unitName: "aaa",
-      id: "1",
-    },
-    { unitName: "bbb", id: "9" },
-  ];
   const { data: allRegionData, isLoading } = useQuery(
-    RQKeys.officeAutomation.saftyFinding.getSaftyFindingAllregion(),
-    () => getSaftyFindingAllregion()
+    RQKeys.officeAutomation.saftyFinding.getSaftyFindingAllregion({
+      page: paginationModel.page,
+      size: paginationModel.pageSize,
+    }),
+    () =>
+      getSaftyFindingAllregion({
+        page: paginationModel.page,
+        size: paginationModel.pageSize,
+      }),
+    {
+      keepPreviousData: true,
+    }
   );
+
   const handleSelectRow = () => {
     if (selectedRow) {
       changeSelectedRegion(selectedRow);
@@ -91,7 +94,7 @@ const SafetyFindingRegionModal = () => {
 
   return (
     <Modal
-      width="80%"
+      width="85%"
       maxHeight="85%"
       isOpen={isOpenModal}
       onToggle={() => {
@@ -111,7 +114,7 @@ const SafetyFindingRegionModal = () => {
                   maxWidth: undefined,
                 }),
               })),
-              rows: rows || allRegionData?.list || [],
+              rows: allRegionData?.list || [],
               loading: isLoading,
               pageSizeOptions: [5, 10, 25, 50, 100],
               paginationModel,

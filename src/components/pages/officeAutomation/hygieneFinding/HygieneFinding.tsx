@@ -7,45 +7,97 @@ import { HygieneFindingFormSchema } from "../../../../validations/officeAutomati
 import CustomComboBox from "../../../inputs/CustomComboBox";
 import CustomCheckboxInput from "../../../inputs/CustomCheckboxInput";
 import { DatePicker } from "../../../inputs/date/DatePicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { modalStore } from "../../../../store/ModalStore";
 import HygieneFindingRegionModal from "./HygieneFindingRegionModal";
 import HygieneFindingResponsiblePersonModal from "./HygieneFindingResponsiblePersonModal";
 import HygieneFindingContractorModal from "./HygieneFindingContractorModal";
+import { useQuery } from "react-query";
+import { RQKeys } from "@/constant/RQKeys";
 import {
- 
-  type PriorityOption,
-} from "../../../../api/officeAutomation/hygienFinding";
+  getHasRoleIdByGroupId,
+  RoleIdByGroupId,
+} from "@/api/officeAutomation/safetyFinding";
+import {
+  getHygienePriority,
+  getHygienHarmfulFactor,
+} from "@/api/officeAutomation/hygienFinding";
+import FallbackLazyLoad from "@/components/lazyLoad/FallbackLazyLoad";
+import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
+import CardMessage from "@/components/ui/CardMessage";
 
 interface FormValues {
-  priority: PriorityOption;
-  correction: boolean;
-  description: string;
+  subject: { id: string; label: string };
   region: string;
+  unitManager: string;
+  priority: { id: string; label: string };
+  harmfulFactor: { id: string; label: string };
   contractor: string;
-  date: string;
+  description: string;
+  suggestionWork: string;
+  correction: boolean;
 }
 enum ModalKeys {
   REGION = "REGION",
   RESPONSIBLE_PERSON = "RESPONSIBLE_PERSON",
   CONTRACTOR_NAME = "CONTRACTOR_NAME",
 }
-const defaultValues = {};
+
 const HygieneFinding = () => {
   const isDesktopMode = isDesktop();
-  const [date, setDate] = useState<Date>();
+  // const [date, setDate] = useState<Date>();
   const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
+  const { selectedContractor, selectedRegion, selectedUnitManager } =
+    hygienFindingStore();
+
+  const defaultValues = {
+    region: null,
+    subject: null,
+    unitManager: undefined,
+    description: undefined,
+    suggestionWork: undefined,
+    correction: false,
+    contractor: undefined,
+    priority: null,
+    harmfulFactor: null,
+  };
+
   const {
     handleSubmit,
     control,
     // watch,
     // reset,
-    // setValue,
+    setValue,
     // formState: { errors },
   } = useForm<FormValues | any>({
     resolver: yupResolver(HygieneFindingFormSchema),
     defaultValues,
   });
+
+  const { data: hasRoleIdByGroupId, isLoading: isLoadingHasRoleByIdGroupId } =
+    useQuery(
+      RQKeys.officeAutomation.saftyFinding.getHasRoleIdByGroupId(
+        RoleIdByGroupId.ROLE_PROFESSIONAL_HEALTH
+      ),
+      () => getHasRoleIdByGroupId(RoleIdByGroupId.ROLE_SAFETY_FINDINGS)
+    );
+
+
+  const { data: hygieneFindingPriority } = useQuery(
+    RQKeys.officeAutomation.hygieneFinding.getHygienePriority(),
+    () => getHygienePriority(),
+    {
+      enabled: Boolean(hasRoleIdByGroupId?.hasRole),
+    }
+  );
+
+  const { data: harmfulFactorsData } = useQuery(
+    RQKeys.officeAutomation.hygieneFinding.getHygienePriority(),
+    () => getHygienHarmfulFactor(),
+    {
+      enabled: Boolean(hasRoleIdByGroupId?.hasRole),
+    }
+  );
 
   const handleModalClick = (key: ModalKeys) => {
     changeIsOpenModal(true);
@@ -56,140 +108,176 @@ const HygieneFinding = () => {
     console.log("submit called", data);
   };
 
+  useEffect(() => {
+    setValue("region", selectedRegion?.committeeName);
+  }, [selectedRegion?.id]);
+
+  useEffect(() => {
+    setValue("unitManager", selectedUnitManager?.title);
+  }, [selectedUnitManager?.id]);
+
+  console.log(selectedUnitManager);
+  
+  if (isLoadingHasRoleByIdGroupId) {
+    return <FallbackLazyLoad />;
+  }
+
   return (
     <>
-      <div className="flex flex-col gap-4">
-        <div className="bg-[#13678a] flex flex-col gap-2 p-4 rounded-md">
-          <h1 className="text-white text-center text-2xl">
-            سیستم جامع اقدامات اصلاحی
-          </h1>
-          <h3 className="text-white text-center text-base">
-            فرم گزارش و اصلاح یافته‌های بهداشت حرفه‌ای و ارگونومی
-          </h3>
-        </div>
+      {hasRoleIdByGroupId && !hasRoleIdByGroupId.hasRole ? (
         <div>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
-            <div>
-              <CustomTextInput
-                control={control}
-                label="نام ناحیه / نام واحد"
-                name="region"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={() => handleModalClick(ModalKeys.REGION)}
-                      >
-                        انتخاب
-                      </Button>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-
-            <div>
-              <CustomTextInput
-                control={control}
-                label="مسئول واحد"
-                name="region"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Button
-                        onClick={() =>
-                          handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
-                        }
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                      >
-                        انتخاب
-                      </Button>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-
-            <div
-              className={`flex ${
-                isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
-              }`}
+          <CardMessage message="دسترسی لازم برای انجام عملیات وجود ندارد." />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div className="bg-[#13678a] flex flex-col gap-2 p-4 rounded-md">
+            <h1 className="text-white text-center text-2xl">
+              سیستم جامع اقدامات اصلاحی
+            </h1>
+            <h3 className="text-white text-center text-base">
+              فرم گزارش و اصلاح یافته‌های بهداشت حرفه‌ای و ارگونومی
+            </h3>
+          </div>
+          <div>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
             >
-              <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                <CustomComboBox
-                  options={[]}
+              <div>
+                <CustomTextInput
                   control={control}
-                  label="نوع اولویت"
-                  name="priority"
+                  label="نام ناحیه / نام واحد"
+                  name="region"
+                  shrink
+                  disabled
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() => handleModalClick(ModalKeys.REGION)}
+                        >
+                          انتخاب
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </div>
-              <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                <CustomComboBox
+
+              <div>
+                <CustomTextInput
                   control={control}
-                  label="عوامل زیان‌آور"
-                  name="finded"
+                  label="مسئول واحد"
+                  disabled
+                  name="unitManager"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          onClick={() =>
+                            handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
+                          }
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                        >
+                          انتخاب
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </div>
-            </div>
 
-            <div>
-              <CustomTextInput
-                control={control}
-                label="نام پیمانکار"
-                name="contractor"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        onClick={() =>
-                          handleModalClick(ModalKeys.CONTRACTOR_NAME)
-                        }
-                      >
-                        انتخاب
-                      </Button>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
+              <div
+                className={`flex ${
+                  isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
+                }`}
+              >
+                <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+                  <CustomComboBox
+                    options={
+                      hygieneFindingPriority?.map((c) => ({
+                        id: c.id,
+                        label: c.name,
+                      })) || []
+                    }
+                    control={control}
+                    label="نوع اولویت"
+                    name="priority"
+                  />
+                </div>
+                <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+                  <CustomComboBox
+                    options={
+                      harmfulFactorsData?.map((c) => ({
+                        id: c.id,
+                        label: c.name,
+                      })) || []
+                    }
+                    control={control}
+                    label="عوامل زیان‌آور"
+                    name="finded"
+                  />
+                </div>
+              </div>
 
-            <div>
-              <CustomTextInput
-                multiline
-                rows={isDesktopMode ? 4 : 3}
-                name="description"
-                control={control}
-                label="شرح یافته"
-              />
-            </div>
+              <div>
+                <CustomTextInput
+                  control={control}
+                  label="نام پیمانکار"
+                  name="contractor"
+                  disabled
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() =>
+                            handleModalClick(ModalKeys.CONTRACTOR_NAME)
+                          }
+                        >
+                          انتخاب
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
 
-            <div>
-              <CustomTextInput
-                multiline
-                rows={isDesktopMode ? 4 : 3}
-                name="description"
-                control={control}
-                label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
-              />
-            </div>
+              <div>
+                <CustomTextInput
+                  multiline
+                  rows={isDesktopMode ? 4 : 3}
+                  name="description"
+                  control={control}
+                  label="شرح یافته"
+                />
+              </div>
 
-            <div
-              className={`flex ${
-                isDesktopMode ? "flex-row gap-4" : "flex-col gap-4 items-center"
-              }`}
-            >
-              <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+              <div>
+                <CustomTextInput
+                  multiline
+                  rows={isDesktopMode ? 4 : 3}
+                  name="description"
+                  control={control}
+                  label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
+                />
+              </div>
+
+              <div
+                className={`flex ${
+                  isDesktopMode
+                    ? "flex-row gap-4"
+                    : "flex-col gap-4 items-center"
+                }`}
+              >
+                {/* <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                 <Controller
                   control={control}
                   name="date"
@@ -213,34 +301,37 @@ const HygieneFinding = () => {
                     />
                   )}
                 />
+              </div> */}
+                <div
+                  className={`flex items-center ${
+                    isDesktopMode ? "w-1/2" : "w-full "
+                  }`}
+                >
+                  <CustomCheckboxInput
+                    control={control}
+                    name="correction"
+                    label="اصلاح در محل انجام پذیرفت"
+                  />
+                </div>
               </div>
               <div
-                className={`flex items-center ${
-                  isDesktopMode ? "w-1/2" : "w-full "
-                }`}
+                className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}
               >
-                <CustomCheckboxInput
-                  control={control}
-                  name="correction"
-                  label="اصلاح در محل انجام پذیرفت"
-                />
+                <Button
+                  fullWidth
+                  color="success"
+                  variant="contained"
+                  type="submit"
+                  // disabled={isLoading}
+                  // onClick={handleClickOnSave}
+                >
+                  ثبت
+                </Button>
               </div>
-            </div>
-            <div className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}>
-              <Button
-                fullWidth
-                color="success"
-                variant="contained"
-                type="submit"
-                // disabled={isLoading}
-                // onClick={handleClickOnSave}
-              >
-                ثبت
-              </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
       {isOpenModal && modalKey === ModalKeys.REGION && (
         <HygieneFindingRegionModal />
       )}

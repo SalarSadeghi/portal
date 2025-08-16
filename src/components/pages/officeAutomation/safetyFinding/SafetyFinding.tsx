@@ -24,16 +24,19 @@ import { modalStore } from "@/store/ModalStore";
 import CardMessage from "@/components/ui/CardMessage";
 import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
 import { useEffect } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
 
 interface FormValues {
   subject: { id: string; label: string };
   region: string;
   unitManager: string;
-  oriority: { id: string; label: string };
+  priority: { id: string; label: string };
   finded: { id: string; label: string };
-  contractorName: string;
-  descriprion: string;
+  contractor: string;
+  description: string;
   suggestionWork: string;
+  correction: boolean;
 }
 
 enum ModalKeys {
@@ -46,10 +49,19 @@ const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
 
   const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
-  const { selectedRegion } = safetyFindingStore();
+  const { selectedRegion, selectedUnitManager } = safetyFindingStore();
   const defaultValues = {
     region: selectedRegion?.unitName || "",
+    subject: null,
+    unitManager: undefined,
+    description: undefined,
+    suggestionWork: undefined,
+    correction: false,
+    contractor: undefined,
+    priority: null,
+    finded: null,
   };
+  
   const {
     handleSubmit,
     control,
@@ -58,7 +70,7 @@ const SafetyFinding = () => {
     setValue,
     // formState: { errors },
   } = useForm<FormValues | any>({
-    // resolver: yupResolver(SafetyFindingFormSchema),
+    resolver: yupResolver(SafetyFindingFormSchema),
     defaultValues,
   });
   const handleModalClick = (key: ModalKeys) => {
@@ -100,191 +112,197 @@ const SafetyFinding = () => {
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log("submit called", data);
   };
+
   useEffect(() => {
     setValue("region", selectedRegion?.unitName);
   }, [selectedRegion?.id]);
 
-  {
-    isLoadingHasRoleByIdGroupId && <FallbackLazyLoad />;
+  useEffect(() => {
+    setValue("unitManager", selectedUnitManager?.title);
+  }, [selectedUnitManager?.id]);
+
+ 
+
+  if (isLoadingHasRoleByIdGroupId) {
+    return <FallbackLazyLoad />;
   }
 
   return (
     <>
-      {hasRoleIdByGroupId ? (
-        !true ? (
-          <div>
-            <CardMessage message="دسترسی لازم برای انجام عملیات وجود ندارد." />
+      {hasRoleIdByGroupId && !hasRoleIdByGroupId.hasRole ? (
+        <div>
+          <CardMessage message="دسترسی لازم برای انجام عملیات وجود ندارد." />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div className="bg-[#13678a] flex flex-col gap-2 p-4 rounded-md">
+            <h1 className="text-white text-center text-2xl">
+              سیستم جامع اقدامات اصلاحی
+            </h1>
+            <h3 className="text-white text-center text-base">
+              فرم گزارش و اصلاح یافته‌های ایمنی
+            </h3>
           </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            <div className="bg-[#13678a] flex flex-col gap-2 p-4 rounded-md">
-              <h1 className="text-white text-center text-2xl">
-                سیستم جامع اقدامات اصلاحی
-              </h1>
-              <h3 className="text-white text-center text-base">
-                فرم گزارش و اصلاح یافته‌های ایمنی
-              </h3>
-            </div>
-            <div>
-              <form
-                onSubmit={handleSubmit(onSubmit)}
-                className="flex flex-col gap-4"
+          <div>
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+            >
+              {/* subject */}
+              <div className={``}>
+                <CustomComboBox
+                  name="subject"
+                  control={control}
+                  label="موضوع یافته"
+                  options={
+                    Array.isArray(safetyFindingsSubjects)
+                      ? safetyFindingsSubjects?.map((s) => ({
+                          id: s.entityCode,
+                          label: s.name,
+                        }))
+                      : []
+                  }
+                />
+              </div>
+              {/* region */}
+              <div>
+                <CustomTextInput
+                  control={control}
+                  label="نام ناحیه / نام واحد"
+                  name="region"
+                  disabled
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          onClick={() => handleModalClick(ModalKeys.REGION)}
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                        >
+                          انتخاب
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+              {/* responsble person */}
+              <div>
+                <CustomTextInput
+                  control={control}
+                  label="مسئول واحد"
+                  name="unitManager"
+                  disabled
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() =>
+                            handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
+                          }
+                        >
+                          انتخاب
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+              {/* priority and findings */}
+              <div
+                className={`flex ${
+                  isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
+                }`}
               >
-                {/* subject */}
-                <div className={``}>
+                <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                   <CustomComboBox
-                    name="subject"
                     control={control}
-                    label="موضوع یافته"
+                    label="اولویت"
+                    name="priority"
                     options={
-                      Array.isArray(safetyFindingsSubjects)
-                        ? safetyFindingsSubjects?.map((s) => ({
-                            id: s.entityCode,
-                            label: s.name,
+                      Array.isArray(safetyFindingsPriority)
+                        ? safetyFindingsPriority?.map((c) => ({
+                            id: c.entityCode,
+                            label: c.name,
                           }))
                         : []
                     }
                   />
                 </div>
-                {/* region */}
-                <div>
-                  <CustomTextInput
+                <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+                  <CustomComboBox
                     control={control}
-                    label="نام ناحیه / نام واحد"
-                    name="region"
-                    disabled
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            onClick={() => handleModalClick(ModalKeys.REGION)}
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                          >
-                            انتخاب
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    }}
+                    label="یافته‌ها"
+                    name="finded"
+                    options={
+                      Array.isArray(safetyFindingsData)
+                        ? safetyFindingsData?.map((c) => ({
+                            id: c.entityCode,
+                            label: c.name,
+                          }))
+                        : []
+                    }
                   />
                 </div>
-                {/* responsble person */}
-                <div>
-                  <CustomTextInput
-                    control={control}
-                    label="مسئول واحد"
-                    name="regionn"
-                    disabled
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            onClick={() =>
-                              handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
-                            }
-                          >
-                            انتخاب
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </div>
-                {/* priority and findings */}
-                <div
-                  className={`flex ${
-                    isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
-                  }`}
-                >
-                  <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                    <CustomComboBox
-                      control={control}
-                      label="اولویت"
-                      name="priority"
-                      options={
-                        Array.isArray(safetyFindingsPriority)
-                          ? safetyFindingsPriority?.map((c) => ({
-                              id: c.entityCode,
-                              label: c.name,
-                            }))
-                          : []
-                      }
-                    />
-                  </div>
-                  <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                    <CustomComboBox
-                      control={control}
-                      label="یافته‌ها"
-                      name="finded"
-                      options={
-                        Array.isArray(safetyFindingsData)
-                          ? safetyFindingsData?.map((c) => ({
-                              id: c.entityCode,
-                              label: c.name,
-                            }))
-                          : []
-                      }
-                    />
-                  </div>
-                </div>
-                {/* contractor  name*/}
-                <div>
-                  <CustomTextInput
-                    control={control}
-                    label="نام پیمانکار"
-                    disabled
-                    name="contractor"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            size="small"
-                            onClick={() =>
-                              handleModalClick(ModalKeys.CONTRACTOR_NAME)
-                            }
-                          >
-                            انتخاب
-                          </Button>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                </div>
-                {/* description */}
-                <div>
-                  <CustomTextInput
-                    multiline
-                    rows={isDesktopMode ? 4 : 3}
-                    name="description"
-                    control={control}
-                    label="شرح یافته"
-                  />
-                </div>
-                {/* suggestion work */}
-                <div>
-                  <CustomTextInput
-                    multiline
-                    rows={isDesktopMode ? 4 : 3}
-                    name="description"
-                    control={control}
-                    label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
-                  />
-                </div>
-                {/* tme and checkbox */}
-                <div
-                  className={`flex ${
-                    isDesktopMode
-                      ? "flex-row gap-4"
-                      : "flex-col gap-4 items-center"
-                  }`}
-                >
-                  {/* <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
+              </div>
+              {/* contractor  name*/}
+              <div>
+                <CustomTextInput
+                  control={control}
+                  label="نام پیمانکار"
+                  disabled
+                  name="contractor"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="small"
+                          onClick={() =>
+                            handleModalClick(ModalKeys.CONTRACTOR_NAME)
+                          }
+                        >
+                          انتخاب
+                        </Button>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+              {/* description */}
+              <div>
+                <CustomTextInput
+                  multiline
+                  rows={isDesktopMode ? 4 : 3}
+                  name="description"
+                  control={control}
+                  label="شرح یافته"
+                />
+              </div>
+              {/* suggestion work */}
+              <div>
+                <CustomTextInput
+                  multiline
+                  rows={isDesktopMode ? 4 : 3}
+                  name="description"
+                  control={control}
+                  label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
+                />
+              </div>
+              {/* tme and checkbox */}
+              <div
+                className={`flex ${
+                  isDesktopMode
+                    ? "flex-row gap-4"
+                    : "flex-col gap-4 items-center"
+                }`}
+              >
+                {/* <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                 <DatePicker
                   className="w-full"
                   // disableFuture
@@ -301,34 +319,34 @@ const SafetyFinding = () => {
                   // }}
                 />
               </div> */}
-                  <div
-                    className={`flex items-center ${
-                      isDesktopMode ? "w-1/2" : "w-full "
-                    }`}
-                  >
-                    <CustomCheckboxInput
-                      control={control}
-                      name="correction"
-                      label="اصلاح در محل انجام پذیرفت"
-                    />
-                  </div>
-                </div>
-
                 <div
-                  className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}
+                  className={`flex items-center ${
+                    isDesktopMode ? "w-1/2" : "w-full "
+                  }`}
                 >
-                  <Button
-                    fullWidth
-                    // sx={{ backgroundColor: "rgb(138, 81, 19)" }}
-                    color="success"
-                    variant="contained"
-                    type="submit"
-                    // disabled={isLoading}
-                    // onClick={handleClickOnSave}
-                  >
-                    ثبت
-                  </Button>
-                  {/* <Button
+                  <CustomCheckboxInput
+                    control={control}
+                    name="correction"
+                    label="اصلاح در محل انجام پذیرفت"
+                  />
+                </div>
+              </div>
+
+              <div
+                className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}
+              >
+                <Button
+                  fullWidth
+                  // sx={{ backgroundColor: "rgb(138, 81, 19)" }}
+                  color="success"
+                  variant="contained"
+                  type="submit"
+                  // disabled={isLoading}
+                  // onClick={handleClickOnSave}
+                >
+                  ثبت
+                </Button>
+                {/* <Button
                     fullWidth
                     sx={{ backgroundColor: "rgb(19, 138, 129)" }}
                     // color="success"
@@ -373,13 +391,10 @@ const SafetyFinding = () => {
                   >
                     ثبت
                   </Button> */}
-                </div>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
-        )
-      ) : (
-        <CardMessage />
+        </div>
       )}
       {isOpenModal && modalKey === ModalKeys.REGION && (
         <SafetyFindingRegionModal />

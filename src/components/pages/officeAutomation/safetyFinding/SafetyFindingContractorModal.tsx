@@ -3,41 +3,53 @@ import { modalStore } from "../../../../store/ModalStore";
 import DataGridTable from "../../../ui/DataGridTable";
 import { isDesktop } from "../../../../utils";
 import {
+  GRID_CHECKBOX_SELECTION_COL_DEF,
   // GRID_CHECKBOX_SELECTION_COL_DEF,
   type GridColDef,
 } from "@mui/x-data-grid";
-
+import { useQuery } from "react-query";
+import {
+  Contractor,
+  getSafetyFindingContractors,
+} from "@/api/officeAutomation/safetyFinding";
+import { RQKeys } from "@/constant/RQKeys";
+import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
+import { useState } from "react";
+import { Button, Checkbox } from "@mui/material";
 
 const SafetyFindingContractorModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
+  const [selectedRow, setSelectedRow] = useState<Contractor>();
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 5,
+  });
+  const { changeSelectedContractor } = safetyFindingStore();
   const columns: GridColDef[] = [
-    // {
-    //   ...GRID_CHECKBOX_SELECTION_COL_DEF,
-    //   minWidth: 70,
-    //   cellClassName: "dataGridCheckBoxContainer",
-    //   renderCell: (params) => {
-    //     const rowId = Number(params.id);
-    //     return (
-    //       <Checkbox
-    //         color="secondary"
-    //         sx={{ color: theme.palette.secondary.main }}
-    //         checked={localRelatedExperiences.includes(rowId)}
-    //         onChange={(event) => {
-    //           if (event?.target?.checked) {
-    //             setLocalRelatedExperiences([...localRelatedExperiences, rowId]);
-    //           } else {
-    //             setLocalRelatedExperiences(
-    //               localRelatedExperiences.filter((item) => item !== rowId)
-    //             );
-    //           }
-    //         }}
-    //       />
-    //     );
-    //   },
-    // },
     {
-      field: "contractorName",
+      ...GRID_CHECKBOX_SELECTION_COL_DEF,
+      minWidth: 70,
+      cellClassName: "dataGridCheckBoxContainer",
+      renderCell: (params) => {
+        const rowId = params.id;
+        return (
+          <Checkbox
+            color="primary"
+            checked={selectedRow?.id === rowId}
+            onChange={(event) => {
+              if (event?.target?.checked) {
+                setSelectedRow(params.row);
+              } else {
+                setSelectedRow(undefined);
+              }
+            }}
+          />
+        );
+      },
+    },
+    {
+      field: "contractor",
       headerName: "مشخصات پیمانکار",
       align: "center",
       headerAlign: "center",
@@ -47,10 +59,28 @@ const SafetyFindingContractorModal = () => {
       filterable: false,
     },
   ];
-  const rows = [
-    { id: 1, contractorName: "سالار صادقی" },
-    { id: 2, contractorName: "علی رحیمی" },
-  ];
+
+  const { data: contractorData, isLoading } = useQuery(
+    RQKeys.officeAutomation.saftyFinding.getSafetyFindingContractors({
+      page: paginationModel.page,
+      size: paginationModel.pageSize,
+    }),
+    () =>
+      getSafetyFindingContractors({
+        page: paginationModel.page,
+        size: paginationModel.pageSize,
+      }),
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  const handleSelectRow = () => {
+    if (selectedRow) {
+      changeSelectedContractor(selectedRow);
+      changeIsOpenModal(false);
+    }
+  };
   return (
     <Modal
       width="80%"
@@ -73,13 +103,13 @@ const SafetyFindingContractorModal = () => {
                   maxWidth: undefined,
                 }),
               })),
-              rows: rows || [],
-              // loading: isLoading,
+              rows: contractorData?.list || [],
+              loading: isLoading,
               pageSizeOptions: [5, 10, 25, 50, 100],
-              // paginationModel,
+              paginationModel,
               paginationMode: "server",
-              // onPaginationModelChange: setPaginationModel,
-              rowCount: 0, // zero is very crucial!
+              onPaginationModelChange: setPaginationModel,
+              rowCount: contractorData?.total ?? 0, // zero is very crucial!
               disableEval: true,
               disableColumnMenu: !isDesktopMode,
               disableVirtualization: true,
@@ -94,6 +124,15 @@ const SafetyFindingContractorModal = () => {
               // }
             }}
           />
+        </div>
+        <div className="w-full flex justify-end">
+          <Button
+            disabled={!selectedRow}
+            onClick={handleSelectRow}
+            variant="contained"
+          >
+            ثبت
+          </Button>
         </div>
       </div>
     </Modal>
