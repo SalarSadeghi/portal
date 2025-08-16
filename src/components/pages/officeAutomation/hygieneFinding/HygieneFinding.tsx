@@ -82,7 +82,6 @@ const HygieneFinding = () => {
       () => getHasRoleIdByGroupId(RoleIdByGroupId.ROLE_SAFETY_FINDINGS)
     );
 
-
   const { data: hygieneFindingPriority } = useQuery(
     RQKeys.officeAutomation.hygieneFinding.getHygienePriority(),
     () => getHygienePriority(),
@@ -117,7 +116,7 @@ const HygieneFinding = () => {
   }, [selectedUnitManager?.id]);
 
   console.log(selectedUnitManager);
-  
+
   if (isLoadingHasRoleByIdGroupId) {
     return <FallbackLazyLoad />;
   }
@@ -143,12 +142,12 @@ const HygieneFinding = () => {
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
             >
+              {/* region */}
               <div>
                 <CustomTextInput
                   control={control}
                   label="نام ناحیه / نام واحد"
                   name="region"
-                  shrink
                   disabled
                   InputProps={{
                     endAdornment: (
@@ -166,7 +165,7 @@ const HygieneFinding = () => {
                   }}
                 />
               </div>
-
+              {/* unitManager */}
               <div>
                 <CustomTextInput
                   control={control}
@@ -197,6 +196,7 @@ const HygieneFinding = () => {
                   isDesktopMode ? "flex-row gap-2" : "flex-col gap-4"
                 }`}
               >
+                {/* priority */}
                 <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                   <CustomComboBox
                     options={
@@ -210,6 +210,7 @@ const HygieneFinding = () => {
                     name="priority"
                   />
                 </div>
+                {/* harmful Factor */}
                 <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
                   <CustomComboBox
                     options={
@@ -220,7 +221,7 @@ const HygieneFinding = () => {
                     }
                     control={control}
                     label="عوامل زیان‌آور"
-                    name="finded"
+                    name="harmfulFactor"
                   />
                 </div>
               </div>

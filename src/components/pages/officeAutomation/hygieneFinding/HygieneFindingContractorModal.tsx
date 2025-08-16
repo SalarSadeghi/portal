@@ -46,7 +46,7 @@ const HygieneFindingContractorModal = () => {
       },
     },
     {
-      field: "contractor",
+      field: "contractorName",
       headerName: "مشخصات پیمانکار",
       align: "center",
       headerAlign: "center",

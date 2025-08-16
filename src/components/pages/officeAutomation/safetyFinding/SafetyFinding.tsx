@@ -49,7 +49,8 @@ const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
 
   const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
-  const { selectedRegion, selectedUnitManager } = safetyFindingStore();
+  const { selectedRegion, selectedUnitManager, selectedContractor } =
+    safetyFindingStore();
   const defaultValues = {
     region: selectedRegion?.unitName || "",
     subject: null,
@@ -61,7 +62,7 @@ const SafetyFinding = () => {
     priority: null,
     finded: null,
   };
-  
+
   const {
     handleSubmit,
     control,
@@ -121,7 +122,9 @@ const SafetyFinding = () => {
     setValue("unitManager", selectedUnitManager?.title);
   }, [selectedUnitManager?.id]);
 
- 
+  useEffect(() => {
+    setValue("contractor", selectedContractor?.contractorName);
+  }, [selectedContractor?.id]);
 
   if (isLoadingHasRoleByIdGroupId) {
     return <FallbackLazyLoad />;
