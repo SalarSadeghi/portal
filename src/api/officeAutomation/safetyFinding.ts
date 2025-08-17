@@ -10,6 +10,17 @@ export enum RoleIdByGroupId {
 interface GetHasRoleIdByGroupId {
   hasRole: boolean;
 }
+export interface SafetyFindingsRequestDto {
+  subject: string;
+  region: string;
+  unitManager: string;
+  priority: string;
+  finded: string;
+  contractor: string;
+  description: string;
+  suggestionWork: string;
+  correction: boolean;
+}
 
 export interface SafetyFindingsCommitteeDto {
   id: string;
@@ -37,7 +48,7 @@ export interface SaftyFindings {
 }
 
 export interface UnitManager {
-  id: number;
+  id: string;
   title: string;
 }
 
@@ -132,6 +143,14 @@ export const getSafetyFindingContractors = async ({
         size,
       },
     }
+  );
+  return res.data;
+};
+
+export const postSafetyFinding = async (data: SafetyFindingsRequestDto) => {
+  const res = await axiosInstance.post(
+    `${SAFTY_FINDING_URL}`,
+    data
   );
   return res.data;
 };

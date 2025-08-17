@@ -15,7 +15,7 @@ import {
 } from "@/api/officeAutomation/safetyFinding";
 import { useState } from "react";
 import { Button, Checkbox } from "@mui/material";
-import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
+import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
 
 const SafetyFindingRegionModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
@@ -25,12 +25,12 @@ const SafetyFindingRegionModal = () => {
     page: 0,
     pageSize: 5,
   });
-  const { changeSelectedRegion } = hygienFindingStore();
+  const { changeSelectedRegion } = safetyFindingStore();
   const columns: GridColDef[] = [
     {
       ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      minWidth: 70,
       cellClassName: "dataGridCheckBoxContainer",
+      maxWidth: 50,
       renderCell: (params) => {
         const rowId = params.id;
         return (

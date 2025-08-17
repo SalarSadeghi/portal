@@ -1,18 +1,17 @@
 import { Button, InputAdornment } from "@mui/material";
 import CustomTextInput from "../../../inputs/CustomTextInput";
 import { isDesktop } from "../../../../utils";
-import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { HygieneFindingFormSchema } from "../../../../validations/officeAutomation/HygieneFinding";
 import CustomComboBox from "../../../inputs/CustomComboBox";
 import CustomCheckboxInput from "../../../inputs/CustomCheckboxInput";
-import { DatePicker } from "../../../inputs/date/DatePicker";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { modalStore } from "../../../../store/ModalStore";
 import HygieneFindingRegionModal from "./HygieneFindingRegionModal";
 import HygieneFindingResponsiblePersonModal from "./HygieneFindingResponsiblePersonModal";
 import HygieneFindingContractorModal from "./HygieneFindingContractorModal";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { RQKeys } from "@/constant/RQKeys";
 import {
   getHasRoleIdByGroupId,
@@ -21,13 +20,15 @@ import {
 import {
   getHygienePriority,
   getHygienHarmfulFactor,
+  HygieneRequetstDto,
+  postHygiene,
 } from "@/api/officeAutomation/hygienFinding";
 import FallbackLazyLoad from "@/components/lazyLoad/FallbackLazyLoad";
 import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 import CardMessage from "@/components/ui/CardMessage";
+import { useNotification } from "@/hooks/useNotification";
 
 interface FormValues {
-  subject: { id: string; label: string };
   region: string;
   unitManager: string;
   priority: { id: string; label: string };
@@ -47,15 +48,22 @@ const HygieneFinding = () => {
   const isDesktopMode = isDesktop();
   // const [date, setDate] = useState<Date>();
   const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
-  const { selectedContractor, selectedRegion, selectedUnitManager } =
-    hygienFindingStore();
+  const { success, error } = useNotification();
+
+  const {
+    selectedContractor,
+    selectedRegion,
+    selectedUnitManager,
+    changeSelectedContractor,
+    changeSelectedUnitManager,
+    changeSelectedRegion,
+  } = hygienFindingStore();
 
   const defaultValues = {
-    region: null,
-    subject: null,
+    region: undefined,
     unitManager: undefined,
-    description: undefined,
-    suggestionWork: undefined,
+    description: "",
+    suggestionWork: "",
     correction: false,
     contractor: undefined,
     priority: null,
@@ -79,7 +87,7 @@ const HygieneFinding = () => {
       RQKeys.officeAutomation.saftyFinding.getHasRoleIdByGroupId(
         RoleIdByGroupId.ROLE_PROFESSIONAL_HEALTH
       ),
-      () => getHasRoleIdByGroupId(RoleIdByGroupId.ROLE_SAFETY_FINDINGS)
+      () => getHasRoleIdByGroupId(RoleIdByGroupId.ROLE_PROFESSIONAL_HEALTH)
     );
 
   const { data: hygieneFindingPriority } = useQuery(
@@ -91,20 +99,48 @@ const HygieneFinding = () => {
   );
 
   const { data: harmfulFactorsData } = useQuery(
-    RQKeys.officeAutomation.hygieneFinding.getHygienePriority(),
+    RQKeys.officeAutomation.hygieneFinding.getHygienHarmfulFactor(),
     () => getHygienHarmfulFactor(),
     {
       enabled: Boolean(hasRoleIdByGroupId?.hasRole),
     }
   );
 
+  const { mutate: createHygineForm, isLoading: isLoadingCreateHugienForm } =
+    useMutation({
+      mutationFn: postHygiene,
+      onSuccess: () => {
+        success("ثبت فرم با موفقیت انجام شد.");
+        changeSelectedContractor(null);
+        changeSelectedRegion(null);
+        changeSelectedUnitManager(null);
+        setValue("description", "");
+        setValue("suggestionWork", "");
+        setValue("priority", null);
+        setValue("harmfulFactor", null);
+        setValue("correction", false);
+      },
+      onError: () => {
+        error("عملیات با خطا مواجه شد.");
+      },
+    });
   const handleModalClick = (key: ModalKeys) => {
     changeIsOpenModal(true);
     changeKey(key);
   };
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("submit called", data);
+    const dateToSend: HygieneRequetstDto = {
+      contractorId: selectedContractor?.id as string,
+      correction: data.correction,
+      description: data.description,
+      harmfulFactorId: data.harmfulFactor.id,
+      priorityId: data.priority.id,
+      regionId: selectedRegion?.id as string,
+      suggestionWork: data.suggestionWork,
+      unitManagerId: selectedUnitManager?.id as string,
+    };
+    createHygineForm(dateToSend);
   };
 
   useEffect(() => {
@@ -115,7 +151,9 @@ const HygieneFinding = () => {
     setValue("unitManager", selectedUnitManager?.title);
   }, [selectedUnitManager?.id]);
 
-  console.log(selectedUnitManager);
+  useEffect(() => {
+    setValue("contractor", selectedContractor?.contractorName);
+  }, [selectedContractor?.id]);
 
   if (isLoadingHasRoleByIdGroupId) {
     return <FallbackLazyLoad />;
@@ -265,7 +303,7 @@ const HygieneFinding = () => {
                 <CustomTextInput
                   multiline
                   rows={isDesktopMode ? 4 : 3}
-                  name="description"
+                  name="suggestionWork"
                   control={control}
                   label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
                 />
@@ -323,7 +361,7 @@ const HygieneFinding = () => {
                   color="success"
                   variant="contained"
                   type="submit"
-                  // disabled={isLoading}
+                  disabled={isLoadingCreateHugienForm}
                   // onClick={handleClickOnSave}
                 >
                   ثبت

@@ -1,7 +1,7 @@
 import { Paper } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { isAuthLayout } from "../../../utils";
-import { ThemeIcon } from "./HeaderItems";
+// import { ThemeIcon } from "./HeaderItems";
 
 function Header() {
   const location = useLocation();
@@ -23,7 +23,7 @@ function Header() {
         </div>
         <div className="flex gap-4">
           {/* <Language /> */}
-          <ThemeIcon />
+          {/* <ThemeIcon /> */}
         </div>
       </div>
     </Paper>

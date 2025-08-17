@@ -4,14 +4,16 @@ import { Button, InputAdornment } from "@mui/material";
 import SafetyFindingRegionModal from "./SafetyFindingRegionModal";
 import SafetyFindngResponsiblePersonModal from "./SafetyFindngResponsiblePersonModal";
 import SafetyFindingContractorModal from "./SafetyFindingContractorModal";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 
 import {
   getHasRoleIdByGroupId,
   getSafetyFindingPriority,
   getSafetyFindings,
   getSafetyFindingSubjects,
+  postSafetyFinding,
   RoleIdByGroupId,
+  SafetyFindingsRequestDto,
 } from "@/api/officeAutomation/safetyFinding";
 import FallbackLazyLoad from "@/components/lazyLoad/FallbackLazyLoad";
 import { RQKeys } from "@/constant/RQKeys";
@@ -26,6 +28,7 @@ import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
 import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
+import { useNotification } from "@/hooks/useNotification";
 
 interface FormValues {
   subject: { id: string; label: string };
@@ -47,10 +50,16 @@ enum ModalKeys {
 
 const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
-
+  const { success, error } = useNotification();
   const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
-  const { selectedRegion, selectedUnitManager, selectedContractor } =
-    safetyFindingStore();
+  const {
+    selectedRegion,
+    selectedUnitManager,
+    selectedContractor,
+    changeSelectedContractor,
+    changeSelectedRegion,
+    changeSelectedUnitManager,
+  } = safetyFindingStore();
   const defaultValues = {
     region: selectedRegion?.unitName || "",
     subject: null,
@@ -110,8 +119,42 @@ const SafetyFinding = () => {
       enabled: Boolean(hasRoleIdByGroupId?.hasRole),
     }
   );
+
+  const {
+    mutate: createSafetyFinding,
+    isLoading: isLoadingCreateSafetyFinding,
+  } = useMutation({
+    mutationFn: postSafetyFinding,
+    onSuccess: () => {
+      success("ثبت فرم با موفقیت انجام شد.");
+      changeSelectedContractor(null);
+      changeSelectedRegion(null);
+      changeSelectedUnitManager(null);
+        setValue("description", "");
+        setValue("suggestionWork", "");
+        setValue("priority", null);
+        setValue("subject", null);
+        setValue("finded", null);
+        setValue("correction", false);
+    },
+    onError: () => {
+      error("عملیات با خطا مواجه شد.");
+    },
+  });
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log("submit called", data);
+    const dataTosend: SafetyFindingsRequestDto = {
+      contractor: selectedContractor?.id as string,
+      region: selectedRegion?.id as string,
+      unitManager: selectedUnitManager?.id as string,
+      correction: data.correction,
+      description: data.description,
+      suggestionWork: data.suggestionWork,
+      finded: data.finded.id,
+      subject: data.subject.id,
+      priority: data.priority.id,
+    };
+    createSafetyFinding(dataTosend);
   };
 
   useEffect(() => {
@@ -160,7 +203,7 @@ const SafetyFinding = () => {
                   options={
                     Array.isArray(safetyFindingsSubjects)
                       ? safetyFindingsSubjects?.map((s) => ({
-                          id: s.entityCode,
+                          id: s.id,
                           label: s.name,
                         }))
                       : []
@@ -229,7 +272,7 @@ const SafetyFinding = () => {
                     options={
                       Array.isArray(safetyFindingsPriority)
                         ? safetyFindingsPriority?.map((c) => ({
-                            id: c.entityCode,
+                            id: c.id,
                             label: c.name,
                           }))
                         : []
@@ -244,7 +287,7 @@ const SafetyFinding = () => {
                     options={
                       Array.isArray(safetyFindingsData)
                         ? safetyFindingsData?.map((c) => ({
-                            id: c.entityCode,
+                            id: c.id,
                             label: c.name,
                           }))
                         : []
@@ -292,7 +335,7 @@ const SafetyFinding = () => {
                 <CustomTextInput
                   multiline
                   rows={isDesktopMode ? 4 : 3}
-                  name="description"
+                  name="suggestionWork"
                   control={control}
                   label="اقدام اصلاحی انجام شده / اقدام اصلاحی پیشنهادی"
                 />
@@ -344,7 +387,8 @@ const SafetyFinding = () => {
                   color="success"
                   variant="contained"
                   type="submit"
-                  // disabled={isLoading}
+                  loading={isLoadingCreateSafetyFinding}
+                  disabled={isLoadingCreateSafetyFinding}
                   // onClick={handleClickOnSave}
                 >
                   ثبت

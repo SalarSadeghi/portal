@@ -29,8 +29,8 @@ const SafetyFindingContractorModal = () => {
   const columns: GridColDef[] = [
     {
       ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      minWidth: 70,
       cellClassName: "dataGridCheckBoxContainer",
+      maxWidth: 50,
       renderCell: (params) => {
         const rowId = params.id;
         return (

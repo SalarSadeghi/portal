@@ -19,7 +19,7 @@ function App() {
         <CustomThemeProvider>
           <SnackbarProvider
             maxSnack={3}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
             autoHideDuration={3000}
           >
             <AppRouter />

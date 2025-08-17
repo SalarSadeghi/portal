@@ -10,9 +10,9 @@ interface StoreState {
   selectedRegion: SafetyFindingsCommitteeDto | null;
   selectedUnitManager: UnitManager | null;
   selectedContractor: Contractor | null;
-  changeSelectedRegion: (region: SafetyFindingsCommitteeDto) => void;
-  changeSelectedUnitManager: (unitManager: UnitManager) => void;
-  changeSelectedContractor: (contractor: Contractor) => void;
+  changeSelectedRegion: (region: SafetyFindingsCommitteeDto | null) => void;
+  changeSelectedUnitManager: (unitManager: UnitManager | null) => void;
+  changeSelectedContractor: (contractor: Contractor | null) => void;
 }
 
 const store = create<StoreState>((set) => ({
@@ -20,21 +20,21 @@ const store = create<StoreState>((set) => ({
   selectedUnitManager: null,
   selectedContractor: null,
 
-  changeSelectedRegion: (region: SafetyFindingsCommitteeDto) =>
+  changeSelectedRegion: (region: SafetyFindingsCommitteeDto | null) =>
     set(
       produce((draft) => {
         draft.selectedRegion = region;
       }),
       false
     ),
-  changeSelectedUnitManager: (unitManager: UnitManager) =>
+  changeSelectedUnitManager: (unitManager: UnitManager | null) =>
     set(
       produce((draft) => {
         draft.selectedUnitManager = unitManager;
       }),
       false
     ),
-  changeSelectedContractor: (contractor: Contractor) =>
+  changeSelectedContractor: (contractor: Contractor | null) =>
     set(
       produce((draft) => {
         draft.selectedContractor = contractor;

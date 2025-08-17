@@ -29,7 +29,7 @@ const SafetyFindngResponsiblePersonModal = () => {
   const columns: GridColDef[] = [
     {
       ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      minWidth: 70,
+      maxWidth: 50,
       cellClassName: "dataGridCheckBoxContainer",
       renderCell: (params) => {
         const rowId = params.id;
@@ -49,7 +49,7 @@ const SafetyFindngResponsiblePersonModal = () => {
       },
     },
     {
-      field: "unitManager",
+      field: "title",
       headerName: "مسئول واحد",
       align: "center",
       headerAlign: "center",
