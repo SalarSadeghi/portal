@@ -6,26 +6,32 @@ export const RQKeys = {
       getSafetyFindingUnitManagers: ({
         page,
         size,
+        search
       }: {
         page: string | number;
         size: string | number;
-      }) => ["safetyFindingUnitManagers", page, size],
+        search?: string
+      }) => ["safetyFindingUnitManagers", page, size, search],
       getSafetyFindings: () => ["SafetyFindingsData"],
       getHasRoleIdByGroupId: (role: string) => ["hasRoleByGroupId", role],
       getSaftyFindingAllregion: ({
         page,
         size,
+        search,
       }: {
         page: string | number;
         size: string | number;
-      }) => ["saftyFindingAllregion", page, size],
+        search?: string;
+      }) => ["saftyFindingAllregion", page, size, search],
       getSafetyFindingContractors: ({
         page,
         size,
+        search,
       }: {
         page: string | number;
         size: string | number;
-      }) => ["safetyFindingContractors", page, size],
+        search?: string;
+      }) => ["safetyFindingContractors", page, size, search],
     },
     hygieneFinding: {
       getHygienePriority: () => ["hygienePriority"],
@@ -33,6 +39,3 @@ export const RQKeys = {
     },
   },
 };
-
-
-

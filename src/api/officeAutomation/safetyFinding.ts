@@ -82,9 +82,11 @@ export const getSafetyFindings = async () => {
 export const getSafetyFindingUnitManagers = async ({
   page,
   size,
+  search,
 }: {
   page: number;
   size: number;
+  search?: string;
 }) => {
   const res = await axiosInstance.get<PaginatedResponse<UnitManager>>(
     `${SAFTY_FINDING_URL}/unitManagers`,
@@ -92,6 +94,7 @@ export const getSafetyFindingUnitManagers = async ({
       params: {
         page,
         size,
+        search,
       },
     }
   );
@@ -113,9 +116,11 @@ export const getHasRoleIdByGroupId = async (role: RoleIdByGroupId) => {
 export const getSaftyFindingAllregion = async ({
   page,
   size,
+  search,
 }: {
   page: number;
   size: number;
+  search?: string;
 }) => {
   const res = await axiosInstance.get<
     PaginatedResponse<SafetyFindingsCommitteeDto>
@@ -123,6 +128,7 @@ export const getSaftyFindingAllregion = async ({
     params: {
       page,
       size,
+      search,
     },
   });
   return res.data;
@@ -131,9 +137,11 @@ export const getSaftyFindingAllregion = async ({
 export const getSafetyFindingContractors = async ({
   page,
   size,
+  search,
 }: {
   page: number;
   size: number;
+  search?: string;
 }) => {
   const res = await axiosInstance.get<PaginatedResponse<Contractor>>(
     `${SAFTY_FINDING_URL}/contractors`,
@@ -141,6 +149,7 @@ export const getSafetyFindingContractors = async ({
       params: {
         page,
         size,
+        search,
       },
     }
   );
@@ -148,9 +157,6 @@ export const getSafetyFindingContractors = async ({
 };
 
 export const postSafetyFinding = async (data: SafetyFindingsRequestDto) => {
-  const res = await axiosInstance.post(
-    `${SAFTY_FINDING_URL}`,
-    data
-  );
+  const res = await axiosInstance.post(`${SAFTY_FINDING_URL}`, data);
   return res.data;
 };

@@ -2,33 +2,53 @@ import {
   getSafetyFindingUnitManagers,
   UnitManager,
 } from "@/api/officeAutomation/safetyFinding";
+import Loading from "@/components/lazyLoad/Loading";
 import DataGridTable from "@/components/ui/DataGridTable";
 import { Modal } from "@/components/ui/Modal";
 import { RQKeys } from "@/constant/RQKeys";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useNotification } from "@/hooks/useNotification";
 import { modalStore } from "@/store/ModalStore";
 import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 import { isDesktop } from "@/utils";
-import { Button, Checkbox } from "@mui/material";
+import { CloseOutlined, SearchOutlined } from "@mui/icons-material";
+import {
+  Button,
+  Checkbox,
+  IconButton,
+  InputAdornment,
+  TextField,
+  useTheme,
+} from "@mui/material";
 import { GRID_CHECKBOX_SELECTION_COL_DEF, GridColDef } from "@mui/x-data-grid";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "react-query";
 
 const HygieneFindingResponsiblePersonModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
   const [selectedRow, setSelectedRow] = useState<UnitManager>();
+  const theme = useTheme();
+  const [searchValue, setSearchValue] = useState<string>("");
+  const debouncedSearchValue = useDebounce(searchValue, 500);
+  const searchInputRef = useRef<HTMLInputElement>();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
   });
 
   const { changeSelectedUnitManager } = hygienFindingStore();
-  
+
   const columns: GridColDef[] = [
     {
       ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      minWidth: 70,
       cellClassName: "dataGridCheckBoxContainer",
+      width: 80,
+      minWidth: 80,
+      maxWidth: 80,
+      // sortable: false,
+      // filterable: false,
+      // disableColumnMenu: true,
       renderCell: (params) => {
         const rowId = params.id;
         return (
@@ -61,11 +81,14 @@ const HygieneFindingResponsiblePersonModal = () => {
     RQKeys.officeAutomation.saftyFinding.getSafetyFindingUnitManagers({
       page: paginationModel.page,
       size: paginationModel.pageSize,
+      search:
+        debouncedSearchValue?.length > 2 ? debouncedSearchValue : undefined,
     }),
     () =>
       getSafetyFindingUnitManagers({
         page: paginationModel.page,
         size: paginationModel.pageSize,
+        search: debouncedSearchValue || undefined,
       }),
     {
       keepPreviousData: true,
@@ -76,6 +99,22 @@ const HygieneFindingResponsiblePersonModal = () => {
     if (selectedRow) {
       changeSelectedUnitManager(selectedRow);
       changeIsOpenModal(false);
+    }
+  };
+  const { info } = useNotification();
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchValue("");
+  };
+
+  const handleSearchIcon = () => {
+    if (!searchValue || searchValue.trim().length < 3) {
+      info("حداقل 3 کاراکتر برای جستجو نیاز است");
+      return;
     }
   };
 
@@ -90,6 +129,45 @@ const HygieneFindingResponsiblePersonModal = () => {
       title={"مسئول واحد"}
     >
       <div className="flex flex-col gap-8 p-4">
+        <div className={`${isDesktopMode ? "w-full" : "w-full"}`}>
+          <TextField
+            fullWidth
+            label={"جستجو"}
+            // helperText={`${Texts.common.searchInAllFields} (${Texts.common.searchCharactersHelp})`}
+            onChange={handleSearch}
+            inputRef={searchInputRef}
+            value={searchValue}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  {isLoading ? (
+                    <InputAdornment
+                      position="start"
+                      style={{ paddingLeft: theme.spacing(2) }}
+                    >
+                      <Loading size={20} />
+                    </InputAdornment>
+                  ) : undefined}
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <InputAdornment
+                    position="end"
+                    style={{ paddingRight: theme.spacing(2) }}
+                  >
+                    <IconButton onClick={handleSearchIcon}>
+                      <SearchOutlined />
+                    </IconButton>
+                    <IconButton onClick={handleClearSearch}>
+                      <CloseOutlined />
+                    </IconButton>
+                  </InputAdornment>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
         <div>
           <DataGridTable
             hasToolbar={!isDesktopMode}

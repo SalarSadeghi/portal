@@ -1,6 +1,6 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, InputAdornment } from "@mui/material";
+import { Button, FormControl, InputAdornment, TextField } from "@mui/material";
 import SafetyFindingRegionModal from "./SafetyFindingRegionModal";
 import SafetyFindngResponsiblePersonModal from "./SafetyFindngResponsiblePersonModal";
 import SafetyFindingContractorModal from "./SafetyFindingContractorModal";
@@ -130,12 +130,12 @@ const SafetyFinding = () => {
       changeSelectedContractor(null);
       changeSelectedRegion(null);
       changeSelectedUnitManager(null);
-        setValue("description", "");
-        setValue("suggestionWork", "");
-        setValue("priority", null);
-        setValue("subject", null);
-        setValue("finded", null);
-        setValue("correction", false);
+      setValue("description", "");
+      setValue("suggestionWork", "");
+      setValue("priority", null);
+      setValue("subject", null);
+      setValue("finded", null);
+      setValue("correction", false);
     },
     onError: () => {
       error("عملیات با خطا مواجه شد.");
@@ -212,7 +212,7 @@ const SafetyFinding = () => {
               </div>
               {/* region */}
               <div>
-                <CustomTextInput
+                {/* <CustomTextInput
                   control={control}
                   label="نام ناحیه / نام واحد"
                   name="region"
@@ -231,11 +231,36 @@ const SafetyFinding = () => {
                       </InputAdornment>
                     ),
                   }}
-                />
+                /> */}
+                <FormControl aria-label="" fullWidth>
+                  <TextField
+                    fullWidth
+                    value={selectedRegion ? selectedRegion.committeeName : ""}
+                    label="نام ناحیه / نام واحد"
+                    variant="outlined"
+                    onClick={() => handleModalClick(ModalKeys.REGION)}
+                    // InputProps={{
+                    //   endAdornment: (
+                    //     <InputAdornment position="end">
+                    //       <Button
+                    //         variant="contained"
+                    //         color="info"
+                    //         size="small"
+                    //         onClick={}
+                    //       >
+                    //         {
+
+                    //         }
+                    //       </Button>
+                    //     </InputAdornment>
+                    //   ),
+                    // }}
+                  />
+                </FormControl>
               </div>
               {/* responsble person */}
               <div>
-                <CustomTextInput
+                {/* <CustomTextInput
                   control={control}
                   label="مسئول واحد"
                   name="unitManager"
@@ -256,7 +281,34 @@ const SafetyFinding = () => {
                       </InputAdornment>
                     ),
                   }}
-                />
+                /> */}
+                <FormControl aria-label="" fullWidth>
+                  <TextField
+                    fullWidth
+                    value={selectedUnitManager ? selectedUnitManager.title : ""}
+                    label="مسئول واحد"
+                    variant="outlined"
+                    onClick={() =>
+                      handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
+                    }
+                    // InputProps={{
+                    //   endAdornment: (
+                    //     <InputAdornment position="end">
+                    //       <Button
+                    //         variant="contained"
+                    //         color="info"
+                    //         size="small"
+                    //         onClick={}
+                    //       >
+                    //         {
+
+                    //         }
+                    //       </Button>
+                    //     </InputAdornment>
+                    //   ),
+                    // }}
+                  />
+                </FormControl>
               </div>
               {/* priority and findings */}
               <div
@@ -297,7 +349,7 @@ const SafetyFinding = () => {
               </div>
               {/* contractor  name*/}
               <div>
-                <CustomTextInput
+                {/* <CustomTextInput
                   control={control}
                   label="نام پیمانکار"
                   disabled
@@ -318,7 +370,36 @@ const SafetyFinding = () => {
                       </InputAdornment>
                     ),
                   }}
-                />
+                /> */}
+                <FormControl aria-label="" fullWidth>
+                  <TextField
+                    fullWidth
+                    value={
+                      selectedContractor
+                        ? selectedContractor.contractorName
+                        : ""
+                    }
+                    label="نام پیمانکار"
+                    variant="outlined"
+                    onClick={() => handleModalClick(ModalKeys.CONTRACTOR_NAME)}
+                    // InputProps={{
+                    //   endAdornment: (
+                    //     <InputAdornment position="end">
+                    //       <Button
+                    //         variant="contained"
+                    //         color="info"
+                    //         size="small"
+                    //         onClick={}
+                    //       >
+                    //         {
+
+                    //         }
+                    //       </Button>
+                    //     </InputAdornment>
+                    //   ),
+                    // }}
+                  />
+                </FormControl>
               </div>
               {/* description */}
               <div>
