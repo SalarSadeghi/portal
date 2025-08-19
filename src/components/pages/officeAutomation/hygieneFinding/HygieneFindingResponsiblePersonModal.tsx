@@ -1,6 +1,6 @@
 import {
   getSafetyFindingUnitManagers,
-  UnitManager,
+  // UnitManager,
 } from "@/api/officeAutomation/safetyFinding";
 import Loading from "@/components/lazyLoad/Loading";
 import DataGridTable from "@/components/ui/DataGridTable";
@@ -13,21 +13,25 @@ import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 import { isDesktop } from "@/utils";
 import { CloseOutlined, SearchOutlined } from "@mui/icons-material";
 import {
-  Button,
-  Checkbox,
+  // Button,
+  // Checkbox,
   IconButton,
   InputAdornment,
   TextField,
   useTheme,
 } from "@mui/material";
-import { GRID_CHECKBOX_SELECTION_COL_DEF, GridColDef } from "@mui/x-data-grid";
+import {
+  // GRID_CHECKBOX_SELECTION_COL_DEF,
+  GridColDef,
+  GridRowParams,
+} from "@mui/x-data-grid";
 import { useRef, useState } from "react";
 import { useQuery } from "react-query";
 
 const HygieneFindingResponsiblePersonModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
-  const [selectedRow, setSelectedRow] = useState<UnitManager>();
+  // const [selectedRow, setSelectedRow] = useState<UnitManager>();
   const theme = useTheme();
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 500);
@@ -40,38 +44,38 @@ const HygieneFindingResponsiblePersonModal = () => {
   const { changeSelectedUnitManager } = hygienFindingStore();
 
   const columns: GridColDef[] = [
-    {
-      ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      cellClassName: "dataGridCheckBoxContainer",
-      width: 80,
-      minWidth: 80,
-      maxWidth: 80,
-      // sortable: false,
-      // filterable: false,
-      // disableColumnMenu: true,
-      renderCell: (params) => {
-        const rowId = params.id;
-        return (
-          <Checkbox
-            color="primary"
-            checked={selectedRow?.id === rowId}
-            onChange={(event) => {
-              if (event?.target?.checked) {
-                setSelectedRow(params.row);
-              } else {
-                setSelectedRow(undefined);
-              }
-            }}
-          />
-        );
-      },
-    },
+    // {
+    //   ...GRID_CHECKBOX_SELECTION_COL_DEF,
+    //   cellClassName: "dataGridCheckBoxContainer",
+    //   width: 80,
+    //   minWidth: 80,
+    //   maxWidth: 80,
+    //   // sortable: false,
+    //   // filterable: false,
+    //   // disableColumnMenu: true,
+    //   renderCell: (params) => {
+    //     const rowId = params.id;
+    //     return (
+    //       <Checkbox
+    //         color="primary"
+    //         checked={selectedRow?.id === rowId}
+    //         onChange={(event) => {
+    //           if (event?.target?.checked) {
+    //             setSelectedRow(params.row);
+    //           } else {
+    //             setSelectedRow(undefined);
+    //           }
+    //         }}
+    //       />
+    //     );
+    //   },
+    // },
     {
       field: "title",
       headerName: "مسئول واحد",
       align: "center",
       headerAlign: "center",
-      minWidth: 180,
+      minWidth: 400,
       resizable: true,
       sortable: true,
       filterable: false,
@@ -95,9 +99,9 @@ const HygieneFindingResponsiblePersonModal = () => {
     }
   );
 
-  const handleSelectRow = () => {
-    if (selectedRow) {
-      changeSelectedUnitManager(selectedRow);
+  const handleSelectRow = (params: GridRowParams<any>) => {
+    if (params) {
+      changeSelectedUnitManager(params.row);
       changeIsOpenModal(false);
     }
   };
@@ -120,7 +124,7 @@ const HygieneFindingResponsiblePersonModal = () => {
 
   return (
     <Modal
-      width="85%"
+      width="95%"
       maxHeight="85%"
       isOpen={isOpenModal}
       onToggle={() => {
@@ -192,7 +196,9 @@ const HygieneFindingResponsiblePersonModal = () => {
               disableRowSelectionOnClick: true,
               disableColumnFilter: true,
               rowHeight: 80,
-              checkboxSelection: true,
+              // checkboxSelection: true,
+              onRowClick: (params) => handleSelectRow(params),
+
               // rowSelectionModel: localRelatedExperiences,
               // onRowClick: (params) => handleRowClick(params),
               // onRowSelectionModelChange: (newRowSelectionModel) => {
@@ -201,7 +207,7 @@ const HygieneFindingResponsiblePersonModal = () => {
             }}
           />
         </div>
-        <div className="w-full flex justify-end">
+        {/* <div className="w-full flex justify-end">
           <Button
             disabled={!selectedRow}
             onClick={handleSelectRow}
@@ -209,7 +215,7 @@ const HygieneFindingResponsiblePersonModal = () => {
           >
             ثبت
           </Button>
-        </div>
+        </div> */}
       </div>
     </Modal>
   );

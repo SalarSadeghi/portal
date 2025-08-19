@@ -1,6 +1,6 @@
 import {
   getSaftyFindingAllregion,
-  SafetyFindingsCommitteeDto,
+  // SafetyFindingsCommitteeDto,
 } from "@/api/officeAutomation/safetyFinding";
 import Loading from "@/components/lazyLoad/Loading";
 import DataGridTable from "@/components/ui/DataGridTable";
@@ -13,20 +13,22 @@ import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 import { isDesktop } from "@/utils";
 import { CloseOutlined, SearchOutlined } from "@mui/icons-material";
 import {
-  Button,
-  Checkbox,
+  // Button,
+  // Checkbox,
   IconButton,
   InputAdornment,
   TextField,
   useTheme,
 } from "@mui/material";
-import { GRID_CHECKBOX_SELECTION_COL_DEF, GridColDef } from "@mui/x-data-grid";
+import { 
+  // GRID_CHECKBOX_SELECTION_COL_DEF,
+   GridColDef, GridRowParams } from "@mui/x-data-grid";
 import { useRef, useState } from "react";
 import { useQuery } from "react-query";
 
 const HygieneFindingRegionModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
-  const [selectedRow, setSelectedRow] = useState<SafetyFindingsCommitteeDto>();
+  // const [selectedRow, setSelectedRow] = useState<SafetyFindingsCommitteeDto>();
   const isDesktopMode = isDesktop();
 
   const theme = useTheme();
@@ -40,33 +42,33 @@ const HygieneFindingRegionModal = () => {
     pageSize: 5,
   });
   const columns: GridColDef[] = [
-    {
-      ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      minWidth: 70,
-      cellClassName: "dataGridCheckBoxContainer",
-      renderCell: (params) => {
-        const rowId = params.id;
-        return (
-          <Checkbox
-            color="primary"
-            checked={selectedRow?.id === rowId}
-            onChange={(event) => {
-              if (event?.target?.checked) {
-                setSelectedRow(params.row);
-              } else {
-                setSelectedRow(undefined);
-              }
-            }}
-          />
-        );
-      },
-    },
+    // {
+    //   ...GRID_CHECKBOX_SELECTION_COL_DEF,
+    //   minWidth: 70,
+    //   cellClassName: "dataGridCheckBoxContainer",
+    //   renderCell: (params) => {
+    //     const rowId = params.id;
+    //     return (
+    //       <Checkbox
+    //         color="primary"
+    //         checked={selectedRow?.id === rowId}
+    //         onChange={(event) => {
+    //           if (event?.target?.checked) {
+    //             setSelectedRow(params.row);
+    //           } else {
+    //             setSelectedRow(undefined);
+    //           }
+    //         }}
+    //       />
+    //     );
+    //   },
+    // },
     {
       field: "unitName",
       headerName: "ناحیه / واحد",
       align: "center",
       headerAlign: "center",
-      minWidth: 250,
+      minWidth: 400,
       resizable: true,
       sortable: true,
       filterable: false,
@@ -101,9 +103,9 @@ const HygieneFindingRegionModal = () => {
     }
   );
 
-  const handleSelectRow = () => {
-    if (selectedRow) {
-      changeSelectedRegion(selectedRow);
+  const handleSelectRow = (params: GridRowParams<any>) => {
+    if (params) {
+      changeSelectedRegion(params.row);
       changeIsOpenModal(false);
     }
   };
@@ -126,7 +128,7 @@ const HygieneFindingRegionModal = () => {
 
   return (
     <Modal
-      width="80%"
+      width="95%"
       maxHeight="85%"
       isOpen={isOpenModal}
       onToggle={() => {
@@ -198,8 +200,10 @@ const HygieneFindingRegionModal = () => {
               disableRowSelectionOnClick: true,
               disableColumnFilter: true,
               rowHeight: 80,
-              checkboxSelection: true,
               disableMultipleRowSelection: true,
+              
+              onRowClick: (params) => handleSelectRow(params),
+
               // rowSelectionModel: selectedRow,
               // onRowSelectionModelChange: setSelectedRow,
               // onRowSelectionModelChange: (newSelection) => {
@@ -210,7 +214,7 @@ const HygieneFindingRegionModal = () => {
             }}
           />
         </div>
-        <div className="w-full flex justify-end">
+        {/* <div className="w-full flex justify-end">
           <Button
             disabled={!selectedRow}
             onClick={handleSelectRow}
@@ -218,7 +222,7 @@ const HygieneFindingRegionModal = () => {
           >
             ثبت
           </Button>
-        </div>
+        </div> */}
       </div>
     </Modal>
   );

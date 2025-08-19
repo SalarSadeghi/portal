@@ -3,7 +3,7 @@ import { modalStore } from "../../../../store/ModalStore";
 import DataGridTable from "../../../ui/DataGridTable";
 import { isDesktop } from "../../../../utils";
 import {
-  GRID_CHECKBOX_SELECTION_COL_DEF,
+  // GRID_CHECKBOX_SELECTION_COL_DEF,
   GridRowParams,
   // GridRowSelectionModel,
   type GridColDef,
@@ -12,12 +12,12 @@ import { useQuery } from "react-query";
 import { RQKeys } from "@/constant/RQKeys";
 import {
   getSaftyFindingAllregion,
-  SafetyFindingsCommitteeDto,
+  // SafetyFindingsCommitteeDto,
 } from "@/api/officeAutomation/safetyFinding";
 import { useRef, useState } from "react";
 import {
-  Button,
-  Checkbox,
+  // Button,
+  // Checkbox,
   IconButton,
   InputAdornment,
   TextField,
@@ -33,7 +33,7 @@ const SafetyFindingRegionModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const [searchValue, setSearchValue] = useState<string>("");
   const isDesktopMode = isDesktop();
-  const [selectedRow, setSelectedRow] = useState<SafetyFindingsCommitteeDto>();
+  // const [selectedRow, setSelectedRow] = useState<SafetyFindingsCommitteeDto>();
   const searchInputRef = useRef<HTMLInputElement>();
   const debouncedSearchValue = useDebounce(searchValue, 500);
   const [paginationModel, setPaginationModel] = useState({
@@ -68,7 +68,7 @@ const SafetyFindingRegionModal = () => {
       headerName: "ناحیه / واحد",
       align: "center",
       headerAlign: "center",
-      minWidth: 250,
+      minWidth: 400,
       resizable: true,
       sortable: true,
       filterable: false,

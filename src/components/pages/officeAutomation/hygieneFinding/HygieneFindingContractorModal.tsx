@@ -1,5 +1,5 @@
 import {
-  Contractor,
+  // Contractor,
   getSafetyFindingContractors,
 } from "@/api/officeAutomation/safetyFinding";
 import Loading from "@/components/lazyLoad/Loading";
@@ -13,21 +13,25 @@ import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 import { isDesktop } from "@/utils";
 import { CloseOutlined, SearchOutlined } from "@mui/icons-material";
 import {
-  Button,
-  Checkbox,
+  // Button,
+  // Checkbox,
   IconButton,
   InputAdornment,
   TextField,
   useTheme,
 } from "@mui/material";
-import { GRID_CHECKBOX_SELECTION_COL_DEF, GridColDef } from "@mui/x-data-grid";
+import {
+  // GRID_CHECKBOX_SELECTION_COL_DEF,
+  GridColDef,
+  GridRowParams,
+} from "@mui/x-data-grid";
 import { useRef, useState } from "react";
 import { useQuery } from "react-query";
 
 const HygieneFindingContractorModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
-  const [selectedRow, setSelectedRow] = useState<Contractor>();
+  // const [selectedRow, setSelectedRow] = useState<Contractor>();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
@@ -38,33 +42,33 @@ const HygieneFindingContractorModal = () => {
   const searchInputRef = useRef<HTMLInputElement>();
   const { changeSelectedContractor } = hygienFindingStore();
   const columns: GridColDef[] = [
-    {
-      ...GRID_CHECKBOX_SELECTION_COL_DEF,
-      minWidth: 70,
-      cellClassName: "dataGridCheckBoxContainer",
-      renderCell: (params) => {
-        const rowId = params.id;
-        return (
-          <Checkbox
-            color="primary"
-            checked={selectedRow?.id === rowId}
-            onChange={(event) => {
-              if (event?.target?.checked) {
-                setSelectedRow(params.row);
-              } else {
-                setSelectedRow(undefined);
-              }
-            }}
-          />
-        );
-      },
-    },
+    // {
+    //   ...GRID_CHECKBOX_SELECTION_COL_DEF,
+    //   minWidth: 70,
+    //   cellClassName: "dataGridCheckBoxContainer",
+    //   renderCell: (params) => {
+    //     const rowId = params.id;
+    //     return (
+    //       <Checkbox
+    //         color="primary"
+    //         checked={selectedRow?.id === rowId}
+    //         onChange={(event) => {
+    //           if (event?.target?.checked) {
+    //             setSelectedRow(params.row);
+    //           } else {
+    //             setSelectedRow(undefined);
+    //           }
+    //         }}
+    //       />
+    //     );
+    //   },
+    // },
     {
       field: "contractorName",
       headerName: "مشخصات پیمانکار",
       align: "center",
       headerAlign: "center",
-      minWidth: 180,
+      minWidth: 400,
       resizable: true,
       sortable: true,
       filterable: false,
@@ -89,9 +93,9 @@ const HygieneFindingContractorModal = () => {
     }
   );
 
-  const handleSelectRow = () => {
-    if (selectedRow) {
-      changeSelectedContractor(selectedRow);
+  const handleSelectRow = (params: GridRowParams<any>) => {
+    if (params) {
+      changeSelectedContractor(params.row);
       changeIsOpenModal(false);
     }
   };
@@ -113,7 +117,7 @@ const HygieneFindingContractorModal = () => {
   };
   return (
     <Modal
-      width="80%"
+      width="95%"
       maxHeight="85%"
       isOpen={isOpenModal}
       onToggle={() => {
@@ -185,7 +189,9 @@ const HygieneFindingContractorModal = () => {
               disableRowSelectionOnClick: true,
               disableColumnFilter: true,
               rowHeight: 80,
-              checkboxSelection: true,
+              onRowClick: (params) => handleSelectRow(params),
+
+              // checkboxSelection: true,
               // rowSelectionModel: localRelatedExperiences,
               // onRowClick: (params) => handleRowClick(params),
               // onRowSelectionModelChange: (newRowSelectionModel) => {
@@ -194,7 +200,7 @@ const HygieneFindingContractorModal = () => {
             }}
           />
         </div>
-        <div className="w-full flex justify-end">
+        {/* <div className="w-full flex justify-end">
           <Button
             disabled={!selectedRow}
             onClick={handleSelectRow}
@@ -202,7 +208,7 @@ const HygieneFindingContractorModal = () => {
           >
             ثبت
           </Button>
-        </div>
+        </div> */}
       </div>
     </Modal>
   );

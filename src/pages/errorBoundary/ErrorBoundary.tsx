@@ -1,13 +1,17 @@
+import { isDesktop } from "@/utils";
 import { Button } from "@mui/material";
 import React from "react";
 import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
 
 // Fallback UI to display when an error occurs
 const FallbackComponent = ({ error }: { error: Error }) => {
+  const isDesktopMode = isDesktop();
   if (import.meta.env.MODE === "development") {
     return (
       <div
-        className="flex justify-center items-center h-screen gap-4 flex-row-reverse"
+        className={`flex justify-center items-center h-screen gap-4 ${
+          isDesktopMode ? "flex-row-reverse" : "flex-col"
+        }`}
         role="alert"
       >
         <h2>Something went wrong</h2>
@@ -24,7 +28,9 @@ const FallbackComponent = ({ error }: { error: Error }) => {
   } else {
     return (
       <div
-        className="flex justify-center items-center h-screen gap-4 flex-row-reverse"
+        className={`flex justify-center items-center h-screen gap-4 ${
+          isDesktopMode ? "flex-row-reverse" : "flex-col"
+        }`}
         role="alert"
       >
         <h2>Something went wrong</h2>

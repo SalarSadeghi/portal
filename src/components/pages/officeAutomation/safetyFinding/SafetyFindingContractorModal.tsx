@@ -3,22 +3,22 @@ import { modalStore } from "../../../../store/ModalStore";
 import DataGridTable from "../../../ui/DataGridTable";
 import { isDesktop } from "../../../../utils";
 import {
-  GRID_CHECKBOX_SELECTION_COL_DEF,
+  // GRID_CHECKBOX_SELECTION_COL_DEF,
   GridRowParams,
   // GRID_CHECKBOX_SELECTION_COL_DEF,
   type GridColDef,
 } from "@mui/x-data-grid";
 import { useQuery } from "react-query";
 import {
-  Contractor,
+  // Contractor,
   getSafetyFindingContractors,
 } from "@/api/officeAutomation/safetyFinding";
 import { RQKeys } from "@/constant/RQKeys";
 import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
 import { useRef, useState } from "react";
 import {
-  Button,
-  Checkbox,
+  // Button,
+  // Checkbox,
   IconButton,
   InputAdornment,
   TextField,
@@ -28,12 +28,12 @@ import Loading from "@/components/lazyLoad/Loading";
 import { CloseOutlined, SearchOutlined } from "@mui/icons-material";
 import { useNotification } from "@/hooks/useNotification";
 import { useDebounce } from "@/hooks/useDebounce";
-import { GridEventListener } from "@mui/x-data-grid";
+// import { GridEventListener } from "@mui/x-data-grid";
 
 const SafetyFindingContractorModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
-  const [selectedRow, setSelectedRow] = useState<Contractor>();
+  // const [selectedRow, setSelectedRow] = useState<Contractor>();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
@@ -71,7 +71,7 @@ const SafetyFindingContractorModal = () => {
       headerName: "مشخصات پیمانکار",
       align: "center",
       headerAlign: "center",
-      minWidth: 280,
+      minWidth: 400,
       resizable: true,
       sortable: true,
       filterable: false,
@@ -119,7 +119,6 @@ const SafetyFindingContractorModal = () => {
       return;
     }
   };
-
 
   return (
     <Modal

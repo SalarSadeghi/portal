@@ -1,7 +1,9 @@
-import { Button, InputAdornment } from "@mui/material";
+import { Button, FormControl,
+  //  InputAdornment,
+    TextField } from "@mui/material";
 import CustomTextInput from "../../../inputs/CustomTextInput";
 import { isDesktop } from "../../../../utils";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { HygieneFindingFormSchema } from "../../../../validations/officeAutomation/HygieneFinding";
 import CustomComboBox from "../../../inputs/CustomComboBox";
@@ -182,7 +184,7 @@ const HygieneFinding = () => {
             >
               {/* region */}
               <div>
-                <CustomTextInput
+                {/* <CustomTextInput
                   control={control}
                   label="نام ناحیه / نام واحد"
                   name="region"
@@ -201,11 +203,49 @@ const HygieneFinding = () => {
                       </InputAdornment>
                     ),
                   }}
+                /> */}
+                <Controller
+                  name={"region"}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <FormControl aria-label="" fullWidth>
+                      <TextField
+                        {...field}
+                        fullWidth
+                        value={
+                          selectedRegion
+                            ? `${selectedRegion.unitName} - ${selectedRegion.committeeName}`
+                            : ""
+                        }
+                        label="نام ناحیه / نام واحد"
+                        variant="outlined"
+                        onClick={() => handleModalClick(ModalKeys.REGION)}
+                        error={!!fieldState.error}
+                        helperText={fieldState?.error?.message}
+                        // InputProps={{
+                        //   endAdornment: (
+                        //     <InputAdornment position="end">
+                        //       <Button
+                        //         variant="contained"
+                        //         color="info"
+                        //         size="small"
+                        //         onClick={}
+                        //       >
+                        //         {
+
+                        //         }
+                        //       </Button>
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
+                      />
+                    </FormControl>
+                  )}
                 />
               </div>
               {/* unitManager */}
               <div>
-                <CustomTextInput
+                {/* <CustomTextInput
                   control={control}
                   label="مسئول واحد"
                   disabled
@@ -226,6 +266,44 @@ const HygieneFinding = () => {
                       </InputAdornment>
                     ),
                   }}
+                /> */}
+                <Controller
+                  name={"unitManager"}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <FormControl aria-label="" fullWidth>
+                      <TextField
+                        fullWidth
+                        {...field}
+                        value={
+                          selectedUnitManager ? selectedUnitManager.title : ""
+                        }
+                        label="مسئول واحد"
+                        variant="outlined"
+                        onClick={() =>
+                          handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
+                        }
+                        error={!!fieldState.error}
+                        helperText={fieldState?.error?.message}
+                        // InputProps={{
+                        //   endAdornment: (
+                        //     <InputAdornment position="end">
+                        //       <Button
+                        //         variant="contained"
+                        //         color="info"
+                        //         size="small"
+                        //         onClick={}
+                        //       >
+                        //         {
+
+                        //         }
+                        //       </Button>
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
+                      />
+                    </FormControl>
+                  )}
                 />
               </div>
 
@@ -265,7 +343,7 @@ const HygieneFinding = () => {
               </div>
 
               <div>
-                <CustomTextInput
+                {/* <CustomTextInput
                   control={control}
                   label="نام پیمانکار"
                   name="contractor"
@@ -286,6 +364,46 @@ const HygieneFinding = () => {
                       </InputAdornment>
                     ),
                   }}
+                /> */}
+                <Controller
+                  name={"contractor"}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <FormControl aria-label="" fullWidth>
+                      <TextField
+                        fullWidth
+                        {...field}
+                        value={
+                          selectedContractor
+                            ? selectedContractor.contractorName
+                            : ""
+                        }
+                        label="نام پیمانکار"
+                        variant="outlined"
+                        onClick={() =>
+                          handleModalClick(ModalKeys.CONTRACTOR_NAME)
+                        }
+                        error={!!fieldState.error}
+                        helperText={fieldState?.error?.message}
+                        // InputProps={{
+                        //   endAdornment: (
+                        //     <InputAdornment position="end">
+                        //       <Button
+                        //         variant="contained"
+                        //         color="info"
+                        //         size="small"
+                        //         onClick={}
+                        //       >
+                        //         {
+
+                        //         }
+                        //       </Button>
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
+                      />
+                    </FormControl>
+                  )}
                 />
               </div>
 

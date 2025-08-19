@@ -43,7 +43,7 @@ const languageToAdapterLocale: Record<NonNullable<IProps['language']>, any> = {
 }
 
 export const CustomLocalizationProvider = ({ language = 'fa', calendar = 'shamsi',fullMonth = true, ...props }: IProps) => {
-    console.log();
+    
     return (
         <LocalizationProvider
             dateAdapter={calendarToAdapter[calendar]}

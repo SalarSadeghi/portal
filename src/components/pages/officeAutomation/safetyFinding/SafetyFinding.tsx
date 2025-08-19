@@ -1,6 +1,8 @@
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, FormControl, InputAdornment, TextField } from "@mui/material";
+import { Button, FormControl,
+  //  InputAdornment,
+    TextField } from "@mui/material";
 import SafetyFindingRegionModal from "./SafetyFindingRegionModal";
 import SafetyFindngResponsiblePersonModal from "./SafetyFindngResponsiblePersonModal";
 import SafetyFindingContractorModal from "./SafetyFindingContractorModal";
@@ -61,7 +63,7 @@ const SafetyFinding = () => {
     changeSelectedUnitManager,
   } = safetyFindingStore();
   const defaultValues = {
-    region: selectedRegion?.unitName || "",
+    region: null,
     subject: null,
     unitManager: undefined,
     description: undefined,
@@ -172,6 +174,7 @@ const SafetyFinding = () => {
   if (isLoadingHasRoleByIdGroupId) {
     return <FallbackLazyLoad />;
   }
+  
 
   return (
     <>
@@ -232,31 +235,44 @@ const SafetyFinding = () => {
                     ),
                   }}
                 /> */}
-                <FormControl aria-label="" fullWidth>
-                  <TextField
-                    fullWidth
-                    value={selectedRegion ? selectedRegion.committeeName : ""}
-                    label="نام ناحیه / نام واحد"
-                    variant="outlined"
-                    onClick={() => handleModalClick(ModalKeys.REGION)}
-                    // InputProps={{
-                    //   endAdornment: (
-                    //     <InputAdornment position="end">
-                    //       <Button
-                    //         variant="contained"
-                    //         color="info"
-                    //         size="small"
-                    //         onClick={}
-                    //       >
-                    //         {
+                <Controller
+                  name={"region"}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <FormControl aria-label="" fullWidth>
+                      <TextField
+                        {...field}
+                        fullWidth
+                        value={
+                          selectedRegion
+                            ? `${selectedRegion.unitName} - ${selectedRegion.committeeName}`
+                            : ""
+                        }
+                        label="نام ناحیه / نام واحد"
+                        variant="outlined"
+                        onClick={() => handleModalClick(ModalKeys.REGION)}
+                        error={!!fieldState.error}
+                        helperText={fieldState?.error?.message}
+                        // InputProps={{
+                        //   endAdornment: (
+                        //     <InputAdornment position="end">
+                        //       <Button
+                        //         variant="contained"
+                        //         color="info"
+                        //         size="small"
+                        //         onClick={}
+                        //       >
+                        //         {
 
-                    //         }
-                    //       </Button>
-                    //     </InputAdornment>
-                    //   ),
-                    // }}
-                  />
-                </FormControl>
+                        //         }
+                        //       </Button>
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
+                      />
+                    </FormControl>
+                  )}
+                />
               </div>
               {/* responsble person */}
               <div>
@@ -282,33 +298,44 @@ const SafetyFinding = () => {
                     ),
                   }}
                 /> */}
-                <FormControl aria-label="" fullWidth>
-                  <TextField
-                    fullWidth
-                    value={selectedUnitManager ? selectedUnitManager.title : ""}
-                    label="مسئول واحد"
-                    variant="outlined"
-                    onClick={() =>
-                      handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
-                    }
-                    // InputProps={{
-                    //   endAdornment: (
-                    //     <InputAdornment position="end">
-                    //       <Button
-                    //         variant="contained"
-                    //         color="info"
-                    //         size="small"
-                    //         onClick={}
-                    //       >
-                    //         {
+                <Controller
+                  name={"unitManager"}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <FormControl aria-label="" fullWidth>
+                      <TextField
+                        fullWidth
+                        {...field}
+                        value={
+                          selectedUnitManager ? selectedUnitManager.title : ""
+                        }
+                        label="مسئول واحد"
+                        variant="outlined"
+                        onClick={() =>
+                          handleModalClick(ModalKeys.RESPONSIBLE_PERSON)
+                        }
+                        error={!!fieldState.error}
+                        helperText={fieldState?.error?.message}
+                        // InputProps={{
+                        //   endAdornment: (
+                        //     <InputAdornment position="end">
+                        //       <Button
+                        //         variant="contained"
+                        //         color="info"
+                        //         size="small"
+                        //         onClick={}
+                        //       >
+                        //         {
 
-                    //         }
-                    //       </Button>
-                    //     </InputAdornment>
-                    //   ),
-                    // }}
-                  />
-                </FormControl>
+                        //         }
+                        //       </Button>
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
+                      />
+                    </FormControl>
+                  )}
+                />
               </div>
               {/* priority and findings */}
               <div
@@ -371,35 +398,46 @@ const SafetyFinding = () => {
                     ),
                   }}
                 /> */}
-                <FormControl aria-label="" fullWidth>
-                  <TextField
-                    fullWidth
-                    value={
-                      selectedContractor
-                        ? selectedContractor.contractorName
-                        : ""
-                    }
-                    label="نام پیمانکار"
-                    variant="outlined"
-                    onClick={() => handleModalClick(ModalKeys.CONTRACTOR_NAME)}
-                    // InputProps={{
-                    //   endAdornment: (
-                    //     <InputAdornment position="end">
-                    //       <Button
-                    //         variant="contained"
-                    //         color="info"
-                    //         size="small"
-                    //         onClick={}
-                    //       >
-                    //         {
+                <Controller
+                  name={"contractor"}
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <FormControl aria-label="" fullWidth>
+                      <TextField
+                        fullWidth
+                        {...field}
+                        value={
+                          selectedContractor
+                            ? selectedContractor.contractorName
+                            : ""
+                        }
+                        label="نام پیمانکار"
+                        variant="outlined"
+                        onClick={() =>
+                          handleModalClick(ModalKeys.CONTRACTOR_NAME)
+                        }
+                        error={!!fieldState.error}
+                        helperText={fieldState?.error?.message}
+                        // InputProps={{
+                        //   endAdornment: (
+                        //     <InputAdornment position="end">
+                        //       <Button
+                        //         variant="contained"
+                        //         color="info"
+                        //         size="small"
+                        //         onClick={}
+                        //       >
+                        //         {
 
-                    //         }
-                    //       </Button>
-                    //     </InputAdornment>
-                    //   ),
-                    // }}
-                  />
-                </FormControl>
+                        //         }
+                        //       </Button>
+                        //     </InputAdornment>
+                        //   ),
+                        // }}
+                      />
+                    </FormControl>
+                  )}
+                />
               </div>
               {/* description */}
               <div>

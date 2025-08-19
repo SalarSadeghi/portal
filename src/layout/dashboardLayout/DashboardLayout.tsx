@@ -1,21 +1,24 @@
-import { Outlet, useLocation } from "react-router-dom";
-import { isAuthLayout } from "../../utils";
-import Sidebar from "./sidebar/Sidebar";
-import Header from "./header/Header";
+import {
+  Outlet,
+  //  useLocation
+} from "react-router-dom";
+// import { isAuthLayout } from "../../utils";
+// import Sidebar from "./sidebar/Sidebar";
+// import Header from "./header/Header";
 import { memo } from "react";
 
 const DashboardLayout = () => {
-  const location = useLocation();
+  // const location = useLocation();
 
   return (
     <div className="flex w-full h-screen overflow-hidden">
-      {!isAuthLayout(location) && (
+      {/* {!isAuthLayout(location) && (
         <div className={`h-screen flex max-w-[42%]`}>
           <Sidebar />
         </div>
-      )}
+      )} */}
       <div className="flex flex-col grow">
-        <Header />
+        {/* <Header /> */}
         <div className="p-4 bg-gradient-to-bl from-white via-slate-50 to-[rgb(240,240,240)] grow overflow-y-auto">
           <Outlet />
         </div>

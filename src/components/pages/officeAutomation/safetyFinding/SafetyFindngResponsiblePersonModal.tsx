@@ -2,7 +2,7 @@ import { Modal } from "../../../ui/Modal";
 import { modalStore } from "../../../../store/ModalStore";
 import DataGridTable from "../../../ui/DataGridTable";
 import {
-  GRID_CHECKBOX_SELECTION_COL_DEF,
+  // GRID_CHECKBOX_SELECTION_COL_DEF,
   GridRowParams,
   type GridColDef,
 } from "@mui/x-data-grid";
@@ -10,12 +10,12 @@ import { isDesktop } from "../../../../utils";
 import { useQuery } from "react-query";
 import {
   getSafetyFindingUnitManagers,
-  UnitManager,
+  // UnitManager,
 } from "../../../../api/officeAutomation/safetyFinding";
 import { RQKeys } from "../../../../constant/RQKeys";
 import {
-  Button,
-  Checkbox,
+  // Button,
+  // Checkbox,
   IconButton,
   InputAdornment,
   TextField,
@@ -31,7 +31,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 const SafetyFindngResponsiblePersonModal = () => {
   const { isOpenModal, changeIsOpenModal } = modalStore();
   const isDesktopMode = isDesktop();
-  const [selectedRow, setSelectedRow] = useState<UnitManager>();
+  // const [selectedRow, setSelectedRow] = useState<UnitManager>();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5,
