@@ -131,7 +131,6 @@ const SafetyFindngResponsiblePersonModal = () => {
           <TextField
             fullWidth
             label={"جستجو"}
-            // helperText={`${Texts.common.searchInAllFields} (${Texts.common.searchCharactersHelp})`}
             onChange={handleSearch}
             inputRef={searchInputRef}
             value={searchValue}
