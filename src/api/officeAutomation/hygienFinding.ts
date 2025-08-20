@@ -1,4 +1,4 @@
-import axiosInstance, { USER_API_URL } from "../axios/axios";
+import axiosInstance, { PaginatedResponse, USER_API_URL } from "../axios/axios";
 
 const HYGIENE_FINDING_URL = `${USER_API_URL}/hse/professionalHealth`;
 interface PriorityOption {
@@ -11,6 +11,14 @@ interface HarmfulFactorDTO {
   entityCode: number; // ID
   name: string; // Display name
   id: string;
+}
+
+export interface HygineUnitManagerDTO {
+  id: string;
+  roleId: number;
+  firstName: string;
+  lastName: string;
+  roleName: string;
 }
 
 export interface HygieneRequetstDto {
@@ -34,6 +42,28 @@ export const getHygienePriority = async () => {
 export const getHygienHarmfulFactor = async () => {
   const res = await axiosInstance.get<HarmfulFactorDTO[]>(
     `${HYGIENE_FINDING_URL}/harmfulFactors`
+  );
+  return res.data;
+};
+
+export const getHyginenUnitManagers = async ({
+  page,
+  size,
+  search,
+}: {
+  page: number;
+  size: number;
+  search?: string;
+}) => {
+  const res = await axiosInstance.get<PaginatedResponse<HygineUnitManagerDTO>>(
+    `${HYGIENE_FINDING_URL}/unitManagers`,
+    {
+      params: {
+        search,
+        page,
+        size,
+      },
+    }
   );
   return res.data;
 };

@@ -1,7 +1,6 @@
-import {
-  getSafetyFindingUnitManagers,
-  // UnitManager,
-} from "@/api/officeAutomation/safetyFinding";
+import { getHyginenUnitManagers } from "@/api/officeAutomation/hygienFinding";
+import // UnitManager,
+"@/api/officeAutomation/safetyFinding";
 import Loading from "@/components/lazyLoad/Loading";
 import DataGridTable from "@/components/ui/DataGridTable";
 import { Modal } from "@/components/ui/Modal";
@@ -71,25 +70,27 @@ const HygieneFindingResponsiblePersonModal = () => {
     //   },
     // },
     {
-      field: "title",
-      headerName: "مسئول واحد",
+      field: "firstName",
+      headerName: "مشخصات رییس واحد",
       align: "center",
       headerAlign: "center",
-      minWidth: 400,
+      minWidth: 500,
       resizable: true,
       sortable: true,
       filterable: false,
+      renderCell: (params) =>
+        `${params.row.firstName} ${params.row.lastName} (${params.row.roleName})`,
     },
   ];
-  const { data: safetyFindingsUnitManagers, isLoading } = useQuery(
-    RQKeys.officeAutomation.saftyFinding.getSafetyFindingUnitManagers({
+  const { data: hygieneUnitManagers, isLoading } = useQuery(
+    RQKeys.officeAutomation.hygieneFinding.getHyginenUnitManagers({
       page: paginationModel.page,
       size: paginationModel.pageSize,
       search:
         debouncedSearchValue?.length > 2 ? debouncedSearchValue : undefined,
     }),
     () =>
-      getSafetyFindingUnitManagers({
+      getHyginenUnitManagers({
         page: paginationModel.page,
         size: paginationModel.pageSize,
         search: debouncedSearchValue || undefined,
@@ -182,13 +183,13 @@ const HygieneFindingResponsiblePersonModal = () => {
                   maxWidth: undefined,
                 }),
               })),
-              rows: safetyFindingsUnitManagers?.list || [],
+              rows: hygieneUnitManagers?.list || [],
               loading: isLoading,
               pageSizeOptions: [5, 10, 25, 50, 100],
               paginationModel,
               paginationMode: "server",
               onPaginationModelChange: setPaginationModel,
-              rowCount: safetyFindingsUnitManagers?.total ?? 0, // zero is very crucial!
+              rowCount: hygieneUnitManagers?.total ?? 0, // zero is very crucial!
               disableEval: true,
               disableColumnMenu: !isDesktopMode,
               disableVirtualization: true,
@@ -197,7 +198,6 @@ const HygieneFindingResponsiblePersonModal = () => {
               rowHeight: 80,
               // checkboxSelection: true,
               onRowClick: (params) => handleSelectRow(params),
-
               // rowSelectionModel: localRelatedExperiences,
               // onRowClick: (params) => handleRowClick(params),
               // onRowSelectionModelChange: (newRowSelectionModel) => {

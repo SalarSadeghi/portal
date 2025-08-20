@@ -1,17 +1,17 @@
+import { HygineUnitManagerDTO } from "@/api/officeAutomation/hygienFinding";
 import {
   Contractor,
   SafetyFindingsCommitteeDto,
-  UnitManager,
 } from "@/api/officeAutomation/safetyFinding";
 import { produce } from "immer";
 import { create } from "zustand";
 
 interface StoreState {
   selectedRegion: SafetyFindingsCommitteeDto | null;
-  selectedUnitManager: UnitManager | null;
+  selectedUnitManager: HygineUnitManagerDTO | null;
   selectedContractor: Contractor | null;
   changeSelectedRegion: (region: SafetyFindingsCommitteeDto | null) => void;
-  changeSelectedUnitManager: (unitManager: UnitManager | null) => void;
+  changeSelectedUnitManager: (unitManager: HygineUnitManagerDTO | null) => void;
   changeSelectedContractor: (contractor: Contractor | null) => void;
 }
 
@@ -27,7 +27,7 @@ const store = create<StoreState>((set) => ({
       }),
       false
     ),
-  changeSelectedUnitManager: (unitManager: UnitManager | null) =>
+  changeSelectedUnitManager: (unitManager: HygineUnitManagerDTO | null) =>
     set(
       produce((draft) => {
         draft.selectedUnitManager = unitManager;

@@ -6,11 +6,11 @@ export const RQKeys = {
       getSafetyFindingUnitManagers: ({
         page,
         size,
-        search
+        search,
       }: {
         page: string | number;
         size: string | number;
-        search?: string
+        search?: string;
       }) => ["safetyFindingUnitManagers", page, size, search],
       getSafetyFindings: () => ["SafetyFindingsData"],
       getHasRoleIdByGroupId: (role: string) => ["hasRoleByGroupId", role],
@@ -36,6 +36,15 @@ export const RQKeys = {
     hygieneFinding: {
       getHygienePriority: () => ["hygienePriority"],
       getHygienHarmfulFactor: () => ["hygieneHarmfulFactor"],
+      getHyginenUnitManagers: ({
+        page,
+        size,
+        search,
+      }: {
+        page: string | number;
+        size: string | number;
+        search?: string;
+      }) => ["hygieneUnitManagers", page, size, search],
     },
   },
 };

@@ -1,8 +1,11 @@
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, FormControl,
+import {
+  Button,
+  FormControl,
   //  InputAdornment,
-    TextField } from "@mui/material";
+  TextField,
+} from "@mui/material";
 import SafetyFindingRegionModal from "./SafetyFindingRegionModal";
 import SafetyFindngResponsiblePersonModal from "./SafetyFindngResponsiblePersonModal";
 import SafetyFindingContractorModal from "./SafetyFindingContractorModal";
@@ -36,7 +39,7 @@ interface FormValues {
   subject: { id: string; label: string };
   region: string;
   unitManager: string;
-  priority: { id: string; label: string };
+  priority: { id: string; label: string; entityCode: number };
   finded: { id: string; label: string };
   contractor: string;
   description: string;
@@ -49,7 +52,7 @@ enum ModalKeys {
   RESPONSIBLE_PERSON = "SAFETY_FINDING_RESPONSIBLE_PERSON",
   CONTRACTOR_NAME = "SAFETY_FINDING_CONTRACTOR_NAME",
 }
-
+const LOW_PRIORITY_ENTITY_CODE: number = 447;
 const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
   const { success, error } = useNotification();
@@ -77,7 +80,7 @@ const SafetyFinding = () => {
   const {
     handleSubmit,
     control,
-    // watch,
+    watch,
     // reset,
     setValue,
     // formState: { errors },
@@ -144,6 +147,8 @@ const SafetyFinding = () => {
     },
   });
 
+  const { priority } = watch();
+
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     const dataTosend: SafetyFindingsRequestDto = {
       contractor: selectedContractor?.id as string,
@@ -170,11 +175,16 @@ const SafetyFinding = () => {
   useEffect(() => {
     setValue("contractor", selectedContractor?.contractorName);
   }, [selectedContractor?.id]);
+  
+  useEffect(() => {
+    if (priority?.entityCode === LOW_PRIORITY_ENTITY_CODE) {
+      setValue("correction", false);
+    }
+  }, [priority?.id]);
 
   if (isLoadingHasRoleByIdGroupId) {
     return <FallbackLazyLoad />;
   }
-  
 
   return (
     <>
@@ -353,6 +363,7 @@ const SafetyFinding = () => {
                         ? safetyFindingsPriority?.map((c) => ({
                             id: c.id,
                             label: c.name,
+                            entityCode: c.entityCode,
                           }))
                         : []
                     }
@@ -490,6 +501,7 @@ const SafetyFinding = () => {
                   }`}
                 >
                   <CustomCheckboxInput
+                    disabled={priority?.entityCode === LOW_PRIORITY_ENTITY_CODE}
                     control={control}
                     name="correction"
                     label="اصلاح در محل انجام پذیرفت"

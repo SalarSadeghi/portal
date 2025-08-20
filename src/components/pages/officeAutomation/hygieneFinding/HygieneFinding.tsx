@@ -1,6 +1,9 @@
-import { Button, FormControl,
+import {
+  Button,
+  FormControl,
   //  InputAdornment,
-    TextField } from "@mui/material";
+  TextField,
+} from "@mui/material";
 import CustomTextInput from "../../../inputs/CustomTextInput";
 import { isDesktop } from "../../../../utils";
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
@@ -33,7 +36,7 @@ import { useNotification } from "@/hooks/useNotification";
 interface FormValues {
   region: string;
   unitManager: string;
-  priority: { id: string; label: string };
+  priority: { id: string; label: string; entityCode: number };
   harmfulFactor: { id: string; label: string };
   contractor: string;
   description: string;
@@ -45,6 +48,9 @@ enum ModalKeys {
   RESPONSIBLE_PERSON = "RESPONSIBLE_PERSON",
   CONTRACTOR_NAME = "CONTRACTOR_NAME",
 }
+
+const LOW_PRIORITY_ENTITY_CODE: number = 539;
+const CRITICAL_STATUS: number = 541;
 
 const HygieneFinding = () => {
   const isDesktopMode = isDesktop();
@@ -75,7 +81,7 @@ const HygieneFinding = () => {
   const {
     handleSubmit,
     control,
-    // watch,
+    watch,
     // reset,
     setValue,
     // formState: { errors },
@@ -83,6 +89,7 @@ const HygieneFinding = () => {
     resolver: yupResolver(HygieneFindingFormSchema),
     defaultValues,
   });
+  const { priority } = watch();
 
   const { data: hasRoleIdByGroupId, isLoading: isLoadingHasRoleByIdGroupId } =
     useQuery(
@@ -126,6 +133,7 @@ const HygieneFinding = () => {
         error("عملیات با خطا مواجه شد.");
       },
     });
+
   const handleModalClick = (key: ModalKeys) => {
     changeIsOpenModal(true);
     changeKey(key);
@@ -150,12 +158,21 @@ const HygieneFinding = () => {
   }, [selectedRegion?.id]);
 
   useEffect(() => {
-    setValue("unitManager", selectedUnitManager?.title);
+    setValue("unitManager", selectedUnitManager?.firstName);
   }, [selectedUnitManager?.id]);
 
   useEffect(() => {
     setValue("contractor", selectedContractor?.contractorName);
   }, [selectedContractor?.id]);
+
+  useEffect(() => {
+    if (
+      priority?.entityCode === LOW_PRIORITY_ENTITY_CODE ||
+      priority?.entityCode === CRITICAL_STATUS
+    ) {
+      setValue("correction", false);
+    }
+  }, [priority?.id]);
 
   if (isLoadingHasRoleByIdGroupId) {
     return <FallbackLazyLoad />;
@@ -276,7 +293,9 @@ const HygieneFinding = () => {
                         fullWidth
                         {...field}
                         value={
-                          selectedUnitManager ? selectedUnitManager.title : ""
+                          selectedUnitManager
+                            ? `${selectedUnitManager?.firstName} ${selectedUnitManager?.lastName} (${selectedUnitManager?.roleName})`
+                            : ""
                         }
                         label="مسئول واحد"
                         variant="outlined"
@@ -319,6 +338,7 @@ const HygieneFinding = () => {
                       hygieneFindingPriority?.map((c) => ({
                         id: c.id,
                         label: c.name,
+                        entityCode: c.entityCode,
                       })) || []
                     }
                     control={control}
@@ -465,6 +485,10 @@ const HygieneFinding = () => {
                   }`}
                 >
                   <CustomCheckboxInput
+                    disabled={
+                      priority?.entityCode === LOW_PRIORITY_ENTITY_CODE ||
+                      priority?.entityCode === CRITICAL_STATUS
+                    }
                     control={control}
                     name="correction"
                     label="اصلاح در محل انجام پذیرفت"
@@ -480,6 +504,7 @@ const HygieneFinding = () => {
                   variant="contained"
                   type="submit"
                   disabled={isLoadingCreateHugienForm}
+                  loading={isLoadingCreateHugienForm}
                   // onClick={handleClickOnSave}
                 >
                   ثبت
