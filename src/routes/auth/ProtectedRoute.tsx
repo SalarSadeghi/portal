@@ -8,7 +8,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   const { search } = useLocation();
   const getTokenFromUrl = () => {
     const params = new URLSearchParams(search);
-    return params.get(TOKEN_KEY);
+    const token = params.get(TOKEN_KEY);
+    return token?.charAt(0) === "/" ? token.replace("/", "") : token;
   };
 
   const setTokenToStorage = () => {
