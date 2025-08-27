@@ -21,6 +21,9 @@ export interface HygineUnitManagerDTO {
   roleName: string;
 }
 
+ interface HygieneResultDto {
+  id: string;
+}
 export interface HygieneRequetstDto {
   regionId: string;
   unitManagerId: string;
@@ -69,6 +72,14 @@ export const getHyginenUnitManagers = async ({
 };
 
 export const postHygiene = async (data: HygieneRequetstDto) => {
-  const res = await axiosInstance.post(`${HYGIENE_FINDING_URL}`, data);
+  const res = await axiosInstance.post<HygieneResultDto>(
+    `${HYGIENE_FINDING_URL}`,
+    data
+  );
+  return res.data;
+};
+
+export const postHygieneRefer = async (id: string) => {
+  const res = await axiosInstance.post(`${HYGIENE_FINDING_URL}/refer`, id);
   return res.data;
 };

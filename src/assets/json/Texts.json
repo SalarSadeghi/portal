@@ -1,8 +1,15 @@
 {
   "common": {
-    "noDataFoundMSG": "داده‌ای برای نمایش یافت نشد."
+    "noDataFoundMSG": "داده‌ای برای نمایش یافت نشد.",
+    "cancel": "لغو",
+    "agree": "تایید"
   },
-  "pages": {},
+  "pages": {
+    "hse": {
+      "startRefer": "شروع فرآیند",
+      "startReferMSG": "آیا مایل به شروع فرآیند هستید؟"
+    }
+  },
   "validation": {
     "required": "این فیلد اجباری است"
   }

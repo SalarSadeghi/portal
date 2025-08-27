@@ -10,6 +10,7 @@ import SafetyFindingRegionModal from "./SafetyFindingRegionModal";
 import SafetyFindngResponsiblePersonModal from "./SafetyFindngResponsiblePersonModal";
 import SafetyFindingContractorModal from "./SafetyFindingContractorModal";
 import { useMutation, useQuery } from "react-query";
+import Texts from "@/assets/json/Texts.json";
 
 import {
   getHasRoleIdByGroupId,
@@ -17,6 +18,7 @@ import {
   getSafetyFindings,
   getSafetyFindingSubjects,
   postSafetyFinding,
+  postSafetyFindingRefer,
   RoleIdByGroupId,
   SafetyFindingsRequestDto,
 } from "@/api/officeAutomation/safetyFinding";
@@ -34,6 +36,7 @@ import { useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
 import { useNotification } from "@/hooks/useNotification";
+import { useDialogStore } from "@/store/dialogStore";
 
 interface FormValues {
   subject: { id: string; label: string };
@@ -65,6 +68,14 @@ const SafetyFinding = () => {
     changeSelectedRegion,
     changeSelectedUnitManager,
   } = safetyFindingStore();
+
+  const {
+    changeOpen: changeDialogOpen,
+    changeBody: changeDialogText,
+    changeTitle: changeDialogTitle,
+    changeOnOk: changeDialogOnOk,
+  } = useDialogStore((state) => state);
+
   const defaultValues = {
     region: null,
     subject: null,
@@ -125,12 +136,20 @@ const SafetyFinding = () => {
     }
   );
 
+  const { mutate: createSafetyFindngRefer } = useMutation({
+    mutationFn: postSafetyFindingRefer,
+    onSuccess: () => {
+      success("شروع فرآیند با موفقیت انجام شد");
+    },
+    onError: () => {},
+  });
+
   const {
     mutate: createSafetyFinding,
     isLoading: isLoadingCreateSafetyFinding,
   } = useMutation({
     mutationFn: postSafetyFinding,
-    onSuccess: () => {
+    onSuccess: (data) => {
       success("ثبت فرم با موفقیت انجام شد.");
       changeSelectedContractor(null);
       changeSelectedRegion(null);
@@ -141,6 +160,12 @@ const SafetyFinding = () => {
       setValue("subject", null);
       setValue("finded", null);
       setValue("correction", false);
+      changeDialogOpen(true);
+      changeDialogTitle(`${Texts.pages.hse.startRefer}`);
+      changeDialogText(Texts.pages.hse.startReferMSG);
+      changeDialogOnOk(() => {
+        createSafetyFindngRefer(data.id);
+      });
     },
     onError: () => {
       error("عملیات با خطا مواجه شد.");
@@ -175,7 +200,7 @@ const SafetyFinding = () => {
   useEffect(() => {
     setValue("contractor", selectedContractor?.contractorName);
   }, [selectedContractor?.id]);
-  
+
   useEffect(() => {
     if (priority?.entityCode === LOW_PRIORITY_ENTITY_CODE) {
       setValue("correction", false);

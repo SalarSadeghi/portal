@@ -22,16 +22,19 @@ import {
   getHasRoleIdByGroupId,
   RoleIdByGroupId,
 } from "@/api/officeAutomation/safetyFinding";
+import Texts from "@/assets/json/Texts.json";
 import {
   getHygienePriority,
   getHygienHarmfulFactor,
   HygieneRequetstDto,
   postHygiene,
+  postHygieneRefer,
 } from "@/api/officeAutomation/hygienFinding";
 import FallbackLazyLoad from "@/components/lazyLoad/FallbackLazyLoad";
 import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 import CardMessage from "@/components/ui/CardMessage";
 import { useNotification } from "@/hooks/useNotification";
+import { useDialogStore } from "@/store/dialogStore";
 
 interface FormValues {
   region: string;
@@ -89,7 +92,15 @@ const HygieneFinding = () => {
     resolver: yupResolver(HygieneFindingFormSchema),
     defaultValues,
   });
+
   const { priority } = watch();
+
+  const {
+    changeOpen: changeDialogOpen,
+    changeBody: changeDialogText,
+    changeTitle: changeDialogTitle,
+    changeOnOk: changeDialogOnOk,
+  } = useDialogStore((state) => state);
 
   const { data: hasRoleIdByGroupId, isLoading: isLoadingHasRoleByIdGroupId } =
     useQuery(
@@ -115,10 +126,20 @@ const HygieneFinding = () => {
     }
   );
 
+  const { mutate: createHygieneRefer } = useMutation({
+    mutationFn: postHygieneRefer,
+    onSuccess: () => {
+      success("شروع فرآیند با موفقیت انجام شد");
+    },
+    onError: () => {
+      error("عملیات با خطا مواجه شد.");
+    },
+  });
+
   const { mutate: createHygineForm, isLoading: isLoadingCreateHugienForm } =
     useMutation({
       mutationFn: postHygiene,
-      onSuccess: () => {
+      onSuccess: (data) => {
         success("ثبت فرم با موفقیت انجام شد.");
         changeSelectedContractor(null);
         changeSelectedRegion(null);
@@ -128,6 +149,12 @@ const HygieneFinding = () => {
         setValue("priority", null);
         setValue("harmfulFactor", null);
         setValue("correction", false);
+        changeDialogOpen(true);
+        changeDialogTitle(`${Texts.pages.hse.startRefer}`);
+        changeDialogText(Texts.pages.hse.startReferMSG);
+        changeDialogOnOk(() => {
+          createHygieneRefer(data.id);
+        });
       },
       onError: () => {
         error("عملیات با خطا مواجه شد.");

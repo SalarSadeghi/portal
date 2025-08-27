@@ -1,7 +1,8 @@
-import AppRouter from "./routes";
-import CustomThemeProvider from "./theme/CustomThemeProvider";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SnackbarProvider } from "notistack";
+import AppRouter from "./routes";
+import CustomThemeProvider from "./theme/CustomThemeProvider";
+import { ConfirmDialog } from "./components/ui/ConfirmDialog";
 
 function App() {
   const queryClient = new QueryClient({
@@ -23,6 +24,7 @@ function App() {
             autoHideDuration={3000}
           >
             <AppRouter />
+            <ConfirmDialog />
           </SnackbarProvider>
         </CustomThemeProvider>
       </QueryClientProvider>
