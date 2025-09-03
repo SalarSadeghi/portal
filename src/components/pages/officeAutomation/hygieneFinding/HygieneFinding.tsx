@@ -218,7 +218,7 @@ const HygieneFinding = () => {
               سیستم جامع اقدامات اصلاحی
             </h1>
             <h3 className="text-white text-center text-base">
-              فرم گزارش و اصلاح یافته‌های بهداشت حرفه‌ای و ارگونومی
+              ثبت یافته‌های بهداشت حرفه‌ای و ارگونومی
             </h3>
           </div>
           <div>

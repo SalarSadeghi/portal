@@ -141,7 +141,9 @@ const SafetyFinding = () => {
     onSuccess: () => {
       success("شروع فرآیند با موفقیت انجام شد");
     },
-    onError: () => {},
+    onError: () => {
+      error("عملیات با خطا مواجه شد");
+    },
   });
 
   const {
@@ -224,7 +226,7 @@ const SafetyFinding = () => {
               سیستم جامع اقدامات اصلاحی
             </h1>
             <h3 className="text-white text-center text-base">
-              فرم گزارش و اصلاح یافته‌های ایمنی
+              ثبت یافته‌های ایمنی
             </h3>
           </div>
           <div>
