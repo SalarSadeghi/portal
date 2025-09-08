@@ -533,7 +533,6 @@ const SafetyFinding = () => {
                   }`}
                 >
                   <CustomCheckboxInput
-                    disabled={priority?.entityCode === LOW_PRIORITY_ENTITY_CODE}
                     control={control}
                     name="correction"
                     label="اصلاح در محل انجام پذیرفت"

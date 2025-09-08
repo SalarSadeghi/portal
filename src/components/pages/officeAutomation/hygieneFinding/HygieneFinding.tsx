@@ -517,10 +517,6 @@ const HygieneFinding = () => {
                   }`}
                 >
                   <CustomCheckboxInput
-                    disabled={
-                      priority?.entityCode === LOW_PRIORITY_ENTITY_CODE ||
-                      priority?.entityCode === CRITICAL_STATUS
-                    }
                     control={control}
                     name="correction"
                     label="اصلاح در محل انجام پذیرفت"

@@ -17,7 +17,7 @@ export const HygieneFindingFormSchema = yup.object().shape({
       label: yup.string().required(),
     })
     .required(Texts.validation.required),
-  contractor: yup.string().required(Texts.validation.required),
+  // contractor: yup.string().required(Texts.validation.required),
   description: yup.string().required(Texts.validation.required),
   suggestionWork: yup.string().required(Texts.validation.required),
 });
