@@ -26,6 +26,7 @@ export function ConfirmDialog() {
     hasOkBtn,
     maxWidth,
     isTransparentBackground,
+    isLoading,
     changeIsTransparentBackground,
   } = useDialogStore((state) => state);
 
@@ -43,7 +44,6 @@ export function ConfirmDialog() {
   };
 
   const handleOk = () => {
-    handleToggle();
     if (onOk) onOk();
   };
 
@@ -82,13 +82,20 @@ export function ConfirmDialog() {
       </DialogContent>
       <DialogActions sx={{ justifyContent: "flex-start" }}>
         {hasOkBtn && (
-          <Button onClick={handleOk} autoFocus>
+          <Button
+            loading={isLoading}
+            onClick={handleOk}
+            color="success"
+            autoFocus
+          >
             {Texts.common.agree}
           </Button>
         )}
 
         {hasCancelBtn && (
-          <Button onClick={handleCancel}>{Texts.common.cancel}</Button>
+          <Button color="error" onClick={handleCancel}>
+            {Texts.common.cancel}
+          </Button>
         )}
       </DialogActions>
     </Dialog>

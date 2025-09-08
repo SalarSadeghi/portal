@@ -1,7 +1,7 @@
 import { Modal } from "../../../ui/Modal";
 import { modalStore } from "../../../../store/ModalStore";
 import DataGridTable from "../../../ui/DataGridTable";
-import { isDesktop } from "../../../../utils";
+import { isDesktop, normalizePersianToArabic } from "../../../../utils";
 import {
   // GRID_CHECKBOX_SELECTION_COL_DEF,
   GridRowParams,
@@ -106,7 +106,7 @@ const SafetyFindingContractorModal = () => {
   const { info } = useNotification();
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchValue(value);
+    setSearchValue(normalizePersianToArabic(value));
   };
 
   const handleClearSearch = () => {

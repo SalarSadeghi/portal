@@ -10,7 +10,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useNotification } from "@/hooks/useNotification";
 import { modalStore } from "@/store/ModalStore";
 import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
-import { isDesktop } from "@/utils";
+import { isDesktop, normalizePersianToArabic } from "@/utils";
 import { CloseOutlined, SearchOutlined } from "@mui/icons-material";
 import {
   // Button,
@@ -20,9 +20,11 @@ import {
   TextField,
   useTheme,
 } from "@mui/material";
-import { 
+import {
   // GRID_CHECKBOX_SELECTION_COL_DEF,
-   GridColDef, GridRowParams } from "@mui/x-data-grid";
+  GridColDef,
+  GridRowParams,
+} from "@mui/x-data-grid";
 import { useRef, useState } from "react";
 import { useQuery } from "react-query";
 
@@ -112,7 +114,7 @@ const HygieneFindingRegionModal = () => {
   const { info } = useNotification();
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchValue(value);
+    setSearchValue(normalizePersianToArabic(value));
   };
 
   const handleClearSearch = () => {
@@ -200,7 +202,7 @@ const HygieneFindingRegionModal = () => {
               disableColumnFilter: true,
               rowHeight: 80,
               disableMultipleRowSelection: true,
-              
+
               onRowClick: (params) => handleSelectRow(params),
 
               // rowSelectionModel: selectedRow,

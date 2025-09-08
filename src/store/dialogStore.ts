@@ -10,6 +10,7 @@ interface StoreState {
   overflowY: "visible" | "hidden" | "clip" | "scroll" | "auto";
   hasCancelBtn: boolean;
   hasOkBtn: boolean;
+  isLoading: boolean;
   isTransparentBackground: boolean;
   onCancel?: () => void;
   onOk?: () => void;
@@ -26,9 +27,11 @@ interface StoreState {
     overflowY: "visible" | "hidden" | "clip" | "scroll" | "auto"
   ) => void;
   changeIsTransparentBackground: (isTransparent: boolean) => void;
+  changeIsLoading: (loading: boolean) => void;
 }
 
 const store = create<StoreState>((set) => ({
+  isLoading: false,
   isOpen: false,
   title: "",
   body: "",
@@ -112,6 +115,13 @@ const store = create<StoreState>((set) => ({
     set(
       produce((draft) => {
         draft.isTransparentBackground = isTransparent;
+      }),
+      false
+    ),
+  changeIsLoading: (state: boolean) =>
+    set(
+      produce((draft) => {
+        draft.isLoading = state;
       }),
       false
     ),

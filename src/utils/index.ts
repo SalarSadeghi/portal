@@ -30,4 +30,14 @@ export const isDesktop = () => {
   return isDesktopMode;
 };
 
+const persianToArabicMap: Record<string, string> = {
+  ک: "ك",
+  ی: "ي",
+};
 
+export function normalizePersianToArabic(text: string): string {
+  return text
+    .split("")
+    .map((char) => persianToArabicMap[char] ?? char)
+    .join("");
+}

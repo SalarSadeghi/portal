@@ -74,6 +74,7 @@ const SafetyFinding = () => {
     changeBody: changeDialogText,
     changeTitle: changeDialogTitle,
     changeOnOk: changeDialogOnOk,
+    changeIsLoading: changeDialogIsLoading,
   } = useDialogStore((state) => state);
 
   const defaultValues = {
@@ -140,9 +141,12 @@ const SafetyFinding = () => {
     mutationFn: postSafetyFindingRefer,
     onSuccess: () => {
       success("شروع فرآیند با موفقیت انجام شد");
+      changeDialogOpen(false);
+      changeDialogIsLoading(false);
     },
     onError: () => {
       error("عملیات با خطا مواجه شد");
+      changeDialogIsLoading(false);
     },
   });
 
@@ -167,6 +171,7 @@ const SafetyFinding = () => {
       changeDialogText(Texts.pages.hse.startReferMSG);
       changeDialogOnOk(() => {
         createSafetyFindngRefer(data.id);
+        changeDialogIsLoading(true);
       });
     },
     onError: () => {

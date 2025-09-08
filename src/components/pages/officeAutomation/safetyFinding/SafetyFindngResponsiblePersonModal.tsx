@@ -6,7 +6,7 @@ import {
   GridRowParams,
   type GridColDef,
 } from "@mui/x-data-grid";
-import { isDesktop } from "../../../../utils";
+import { isDesktop, normalizePersianToArabic } from "../../../../utils";
 import { useQuery } from "react-query";
 import {
   getSafetyFindingUnitManagers,
@@ -103,7 +103,7 @@ const SafetyFindngResponsiblePersonModal = () => {
   const { info } = useNotification();
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchValue(value);
+    setSearchValue(normalizePersianToArabic(value));
   };
 
   const handleClearSearch = () => {

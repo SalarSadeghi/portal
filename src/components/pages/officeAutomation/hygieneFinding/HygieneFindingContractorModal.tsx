@@ -10,7 +10,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useNotification } from "@/hooks/useNotification";
 import { modalStore } from "@/store/ModalStore";
 import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
-import { isDesktop } from "@/utils";
+import { isDesktop, normalizePersianToArabic } from "@/utils";
 import { CloseOutlined, SearchOutlined } from "@mui/icons-material";
 import {
   // Button,
@@ -102,7 +102,7 @@ const HygieneFindingContractorModal = () => {
   const { info } = useNotification();
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchValue(value);
+    setSearchValue(normalizePersianToArabic(value));
   };
 
   const handleClearSearch = () => {

@@ -80,6 +80,6 @@ export const postHygiene = async (data: HygieneRequetstDto) => {
 };
 
 export const postHygieneRefer = async (id: string) => {
-  const res = await axiosInstance.post(`${HYGIENE_FINDING_URL}/refer`, id);
+  const res = await axiosInstance.post(`${HYGIENE_FINDING_URL}/refer`, {id});
   return res.data;
 };

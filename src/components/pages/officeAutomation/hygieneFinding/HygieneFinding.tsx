@@ -100,6 +100,7 @@ const HygieneFinding = () => {
     changeBody: changeDialogText,
     changeTitle: changeDialogTitle,
     changeOnOk: changeDialogOnOk,
+    changeIsLoading: changeDialogIsLoading,
   } = useDialogStore((state) => state);
 
   const { data: hasRoleIdByGroupId, isLoading: isLoadingHasRoleByIdGroupId } =
@@ -130,9 +131,12 @@ const HygieneFinding = () => {
     mutationFn: postHygieneRefer,
     onSuccess: () => {
       success("شروع فرآیند با موفقیت انجام شد");
+      changeDialogOpen(false);
+      changeDialogIsLoading(false);
     },
     onError: () => {
       error("عملیات با خطا مواجه شد.");
+      changeDialogIsLoading(false);
     },
   });
 
@@ -154,6 +158,7 @@ const HygieneFinding = () => {
         changeDialogText(Texts.pages.hse.startReferMSG);
         changeDialogOnOk(() => {
           createHygieneRefer(data.id);
+          changeDialogIsLoading(true);
         });
       },
       onError: () => {

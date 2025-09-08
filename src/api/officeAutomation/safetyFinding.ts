@@ -168,7 +168,7 @@ export const postSafetyFinding = async (data: SafetyFindingsRequestDto) => {
 export const postSafetyFindingRefer = async (id: string) => {
   const res = await axiosInstance.post<SafetyFindingResultDto>(
     `${SAFTY_FINDING_URL}/refer`,
-    id
+    { id }
   );
   return res.data;
 };
