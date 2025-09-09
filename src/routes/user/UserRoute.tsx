@@ -12,9 +12,8 @@ const HygieneFinding = React.lazy(
     import("@/components/pages/officeAutomation/hygieneFinding/HygieneFinding")
 );
 
-const ProtectedRoute = React.lazy(()=>import("@/routes/auth/ProtectedRoute"))
+const ProtectedRoute = React.lazy(() => import("@/routes/auth/ProtectedRoute"));
 const UserRoutes = () => {
-  
   return (
     <Routes>
       <Route

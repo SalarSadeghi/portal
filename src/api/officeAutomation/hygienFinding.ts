@@ -23,6 +23,7 @@ export interface HygineUnitManagerDTO {
 
  interface HygieneResultDto {
   id: string;
+  entityNumber: string;
 }
 export interface HygieneRequetstDto {
   regionId: string;

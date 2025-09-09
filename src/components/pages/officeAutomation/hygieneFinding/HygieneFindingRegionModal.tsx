@@ -74,17 +74,29 @@ const HygieneFindingRegionModal = () => {
       resizable: true,
       sortable: true,
       filterable: false,
+      renderCell: (params) => {
+        return (
+          <div
+            className={`flex flex-col items-center justify-center h-full gap-2 ${
+              isDesktopMode ? "text-base" : "text-xs"
+            }`}
+          >
+            <span>{params.row?.unitName}</span>
+            <span>({params?.row?.committeeName})</span>
+          </div>
+        );
+      },
     },
-    {
-      field: "committeeName",
-      headerName: "کمیته",
-      align: "center",
-      headerAlign: "center",
-      minWidth: 180,
-      resizable: true,
-      sortable: true,
-      filterable: false,
-    },
+    // {
+    //   field: "committeeName",
+    //   headerName: "کمیته",
+    //   align: "center",
+    //   headerAlign: "center",
+    //   minWidth: 180,
+    //   resizable: true,
+    //   sortable: true,
+    //   filterable: false,
+    // },
   ];
 
   const { data: allRegionData, isLoading } = useQuery(

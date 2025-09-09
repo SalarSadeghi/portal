@@ -54,6 +54,7 @@ export interface UnitManager {
 
 interface SafetyFindingResultDto {
   id: string;
+  entityNumber: string;
 }
 
 export interface Contractor {
@@ -161,14 +162,14 @@ export const getSafetyFindingContractors = async ({
 };
 
 export const postSafetyFinding = async (data: SafetyFindingsRequestDto) => {
-  const res = await axiosInstance.post(`${SAFTY_FINDING_URL}`, data);
+  const res = await axiosInstance.post<SafetyFindingResultDto>(
+    `${SAFTY_FINDING_URL}`,
+    data
+  );
   return res.data;
 };
 
 export const postSafetyFindingRefer = async (id: string) => {
-  const res = await axiosInstance.post<SafetyFindingResultDto>(
-    `${SAFTY_FINDING_URL}/refer`,
-    { id }
-  );
+  const res = await axiosInstance.post(`${SAFTY_FINDING_URL}/refer`, { id });
   return res.data;
 };

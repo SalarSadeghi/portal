@@ -155,7 +155,23 @@ const HygieneFinding = () => {
         setValue("correction", false);
         changeDialogOpen(true);
         changeDialogTitle(`${Texts.pages.hse.startRefer}`);
-        changeDialogText(Texts.pages.hse.startReferMSG);
+        changeDialogText(
+          <div className={`flex flex-col gap-4`}>
+            <div
+              className={`flex w-full gap-2 ${
+                isDesktopMode ? "flex-row" : "flex-col"
+              }`}
+            >
+              <span className="text-sm">کد رهگیری:</span>
+              <span className="text-sm font-semibold text-[#6b6b6b]">
+                {data.entityNumber}
+              </span>
+            </div>
+            <div>
+              <span>{Texts.pages.hse.startReferMSG}</span>
+            </div>
+          </div>
+        );
         changeDialogOnOk(() => {
           createHygieneRefer(data.id);
           changeDialogIsLoading(true);
@@ -202,6 +218,8 @@ const HygieneFinding = () => {
       priority?.entityCode === LOW_PRIORITY_ENTITY_CODE ||
       priority?.entityCode === CRITICAL_STATUS
     ) {
+      setValue("correction", true);
+    } else {
       setValue("correction", false);
     }
   }, [priority?.id]);
@@ -520,6 +538,7 @@ const HygieneFinding = () => {
                     control={control}
                     name="correction"
                     label="اصلاح در محل انجام پذیرفت"
+                    disabled={true}
                   />
                 </div>
               </div>

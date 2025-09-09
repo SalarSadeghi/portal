@@ -56,6 +56,8 @@ enum ModalKeys {
   CONTRACTOR_NAME = "SAFETY_FINDING_CONTRACTOR_NAME",
 }
 const LOW_PRIORITY_ENTITY_CODE: number = 447;
+const ACCIDEN_POTENTIAL_ENTITY_CODE: number = 450;
+
 const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
   const { success, error } = useNotification();
@@ -168,7 +170,23 @@ const SafetyFinding = () => {
       setValue("correction", false);
       changeDialogOpen(true);
       changeDialogTitle(`${Texts.pages.hse.startRefer}`);
-      changeDialogText(Texts.pages.hse.startReferMSG);
+      changeDialogText(
+        <div className={`flex flex-col gap-4`}>
+          <div
+            className={`flex w-full gap-2 ${
+              isDesktopMode ? "flex-row" : "flex-col"
+            }`}
+          >
+            <span className="text-sm">کد رهگیری:</span>
+            <span className="text-sm font-semibold text-[#6b6b6b]">
+              {data.entityNumber}
+            </span>
+          </div>
+          <div>
+            <span>{Texts.pages.hse.startReferMSG}</span>
+          </div>
+        </div>
+      );
       changeDialogOnOk(() => {
         createSafetyFindngRefer(data.id);
         changeDialogIsLoading(true);
@@ -209,7 +227,12 @@ const SafetyFinding = () => {
   }, [selectedContractor?.id]);
 
   useEffect(() => {
-    if (priority?.entityCode === LOW_PRIORITY_ENTITY_CODE) {
+    if (
+      priority?.entityCode === LOW_PRIORITY_ENTITY_CODE ||
+      priority?.entityCode === ACCIDEN_POTENTIAL_ENTITY_CODE
+    ) {
+      setValue("correction", true);
+    } else {
       setValue("correction", false);
     }
   }, [priority?.id]);
@@ -536,6 +559,7 @@ const SafetyFinding = () => {
                     control={control}
                     name="correction"
                     label="اصلاح در محل انجام پذیرفت"
+                    disabled={true}
                   />
                 </div>
               </div>

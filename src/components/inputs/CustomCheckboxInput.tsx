@@ -16,6 +16,7 @@ interface CustomCheckboxInputProps {
   error?: boolean;
   helperText?: string;
   disabled?: boolean;
+  checked?: boolean;
 }
 
 const CustomCheckboxInput: React.FC<CustomCheckboxInputProps> = ({
