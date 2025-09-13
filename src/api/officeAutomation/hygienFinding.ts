@@ -21,7 +21,7 @@ export interface HygineUnitManagerDTO {
   roleName: string;
 }
 
- interface HygieneResultDto {
+interface HygieneResultDto {
   id: string;
   entityNumber: string;
 }
@@ -80,7 +80,7 @@ export const postHygiene = async (data: HygieneRequetstDto) => {
   return res.data;
 };
 
-export const postHygieneRefer = async (id: string) => {
-  const res = await axiosInstance.post(`${HYGIENE_FINDING_URL}/refer`, {id});
+export const postHygieneRefer = async (data: FormData) => {
+  const res = await axiosInstance.post(`${HYGIENE_FINDING_URL}/refer`, data);
   return res.data;
 };

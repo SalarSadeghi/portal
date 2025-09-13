@@ -18,7 +18,7 @@ import {
   getSafetyFindings,
   getSafetyFindingSubjects,
   postSafetyFinding,
-  postSafetyFindingRefer,
+
   RoleIdByGroupId,
   SafetyFindingsRequestDto,
 } from "@/api/officeAutomation/safetyFinding";
@@ -36,7 +36,6 @@ import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
 import { useNotification } from "@/hooks/useNotification";
-import { useDialogStore } from "@/store/dialogStore";
 import ReferModal from "./ReferModal";
 
 interface FormValues {
