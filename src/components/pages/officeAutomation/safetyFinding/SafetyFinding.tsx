@@ -32,11 +32,12 @@ import CustomCheckboxInput from "@/components/inputs/CustomCheckboxInput";
 import { modalStore } from "@/store/ModalStore";
 import CardMessage from "@/components/ui/CardMessage";
 import { safetyFindingStore } from "@/store/officeAutomation/SafetyFinding";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
 import { useNotification } from "@/hooks/useNotification";
 import { useDialogStore } from "@/store/dialogStore";
+import ReferModal from "./ReferModal";
 
 interface FormValues {
   subject: { id: string; label: string };
@@ -54,14 +55,20 @@ enum ModalKeys {
   REGION = "SAFETY_FINDING_REGION",
   RESPONSIBLE_PERSON = "SAFETY_FINDING_RESPONSIBLE_PERSON",
   CONTRACTOR_NAME = "SAFETY_FINDING_CONTRACTOR_NAME",
+  START_REFER = "START_REFER",
 }
 const LOW_PRIORITY_ENTITY_CODE: number = 447;
 const ACCIDEN_POTENTIAL_ENTITY_CODE: number = 450;
 
+interface ReferProps {
+  entityNumber?: string;
+  id?: string;
+}
 const SafetyFinding = () => {
   const isDesktopMode = isDesktop();
   const { success, error } = useNotification();
   const { changeIsOpenModal, isOpenModal, changeKey, modalKey } = modalStore();
+  const [referData, setReferData] = useState<ReferProps>();
   const {
     selectedRegion,
     selectedUnitManager,
@@ -70,14 +77,6 @@ const SafetyFinding = () => {
     changeSelectedRegion,
     changeSelectedUnitManager,
   } = safetyFindingStore();
-
-  const {
-    changeOpen: changeDialogOpen,
-    changeBody: changeDialogText,
-    changeTitle: changeDialogTitle,
-    changeOnOk: changeDialogOnOk,
-    changeIsLoading: changeDialogIsLoading,
-  } = useDialogStore((state) => state);
 
   const defaultValues = {
     region: null,
@@ -139,19 +138,6 @@ const SafetyFinding = () => {
     }
   );
 
-  const { mutate: createSafetyFindngRefer } = useMutation({
-    mutationFn: postSafetyFindingRefer,
-    onSuccess: () => {
-      success("شروع فرآیند با موفقیت انجام شد");
-      changeDialogOpen(false);
-      changeDialogIsLoading(false);
-    },
-    onError: () => {
-      error("عملیات با خطا مواجه شد");
-      changeDialogIsLoading(false);
-    },
-  });
-
   const {
     mutate: createSafetyFinding,
     isLoading: isLoadingCreateSafetyFinding,
@@ -168,32 +154,12 @@ const SafetyFinding = () => {
       setValue("subject", null);
       setValue("finded", null);
       setValue("correction", false);
-      changeDialogOpen(true);
-      changeDialogTitle(`${Texts.pages.hse.startRefer}`);
-      changeDialogText(
-        <div className={`flex flex-col gap-4`}>
-          <div
-            className={`flex w-full gap-2 ${
-              isDesktopMode ? "flex-row" : "flex-col"
-            }`}
-          >
-            <span className="text-sm">کد رهگیری:</span>
-            <span className="text-sm font-semibold text-[#6b6b6b]">
-              {data.entityNumber}
-            </span>
-          </div>
-          <div>
-            <span>{Texts.pages.hse.startReferMSG}</span>
-          </div>
-        </div>
-      );
-      changeDialogOnOk(() => {
-        createSafetyFindngRefer(data.id);
-        changeDialogIsLoading(true);
-      });
+      setReferData(data);
+      changeIsOpenModal(true);
+      changeKey(ModalKeys.START_REFER);
     },
     onError: () => {
-      error("عملیات با خطا مواجه شد.");
+      error(Texts.common.errorOperationMSG);
     },
   });
 
@@ -637,6 +603,9 @@ const SafetyFinding = () => {
       )}
       {isOpenModal && modalKey === ModalKeys.CONTRACTOR_NAME && (
         <SafetyFindingContractorModal />
+      )}
+      {isOpenModal && modalKey === ModalKeys.START_REFER && referData?.id && (
+        <ReferModal {...referData} />
       )}
     </>
   );

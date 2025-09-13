@@ -2,12 +2,21 @@
   "common": {
     "noDataFoundMSG": "داده‌ای برای نمایش یافت نشد.",
     "cancel": "لغو",
-    "agree": "تایید"
+    "agree": "تایید",
+    "upload": "بارگذاری",
+    "uploadFile": "بارگذاری فایل",
+    "addAttachment": "افزودن پیوست",
+    "attachFileHintTitle": "فایل پیوست را انتخاب کرده یا بکشید و سپس در کادر رها کنید.",
+    "attachFileHintType": "نوع فایل مجاز",
+    "attchFileHintSize": "حجم فایل مجاز",
+    "errorOperationMSG": "انجام عملیات با خطا مواجه شد."
   },
   "pages": {
     "hse": {
       "startRefer": "شروع فرآیند",
-      "startReferMSG": "آیا مایل به شروع فرآیند هستید؟"
+      "startReferMSG": "آیا مایل به شروع فرآیند هستید؟",
+      "entityNumber": "کد رهگیری",
+      "startReferSuccessMSG": "شروع فرآیند با موفقیت انجام شد."
     }
   },
   "validation": {
