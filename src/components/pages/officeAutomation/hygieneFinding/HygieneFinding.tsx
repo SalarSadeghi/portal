@@ -133,7 +133,9 @@ const HygieneFinding = () => {
         setValue("priority", null);
         setValue("harmfulFactor", null);
         setValue("correction", false);
-        setReferData(data)
+        setReferData({ id: data?.id, entityNumber: data?.entityNumber });
+        changeIsOpenModal(true);
+        changeKey(ModalKeys.START_REFER);
       },
       onError: () => {
         error(Texts.common.errorOperationMSG);
@@ -528,10 +530,7 @@ const HygieneFinding = () => {
       {isOpenModal && modalKey === ModalKeys.CONTRACTOR_NAME && (
         <HygieneFindingContractorModal />
       )}
-      {true 
-      //  isOpenModal && modalKey === ModalKeys.START_REFER && referData?.id
-        && 
-       (
+      {isOpenModal && modalKey === ModalKeys.START_REFER && referData?.id && (
         <ReferModal {...referData} />
       )}
     </>

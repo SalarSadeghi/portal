@@ -9,7 +9,10 @@
     "attachFileHintTitle": "فایل پیوست را انتخاب کرده یا بکشید و سپس در کادر رها کنید.",
     "attachFileHintType": "نوع فایل مجاز",
     "attchFileHintSize": "حجم فایل مجاز",
-    "errorOperationMSG": "انجام عملیات با خطا مواجه شد."
+    "errorOperationMSG": "انجام عملیات با خطا مواجه شد.",
+    "fileTooLargeMSG": "حجم فایل بیش از حد مجاز می‌باشد.",
+    "tooManyFilesMSG": "تعداد فایل بیش از حد مجاز می‌باشد.",
+    "errorFileUploadMSG": "خطا در بارگذاری فایل"
   },
   "pages": {
     "hse": {

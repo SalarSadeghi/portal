@@ -1,7 +1,7 @@
 import { Modal } from "@/components/ui/Modal";
 import { modalStore } from "@/store/ModalStore";
 import Texts from "@/assets/json/Texts.json";
-import { FileRejection, useDropzone } from "react-dropzone";
+import { ErrorCode, FileRejection, useDropzone } from "react-dropzone";
 import { MIMES } from "@/types/common/file";
 import { Chip, IconButton, useTheme } from "@mui/material";
 import { DeleteOutline, VerifiedOutlined } from "@mui/icons-material";
@@ -23,15 +23,30 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
   const theme = useTheme();
   const isDesktopMode = isDesktop();
   const [localFiles, setLocalFiles] = useState<File[]>([]);
+  const handleFileRejections = (fileRejections: FileRejection[]) => {
+    if (fileRejections.length === 0) return;
+    const err = fileRejections[0].errors[0];
+    switch (err.code) {
+      case ErrorCode.FileTooLarge:
+        error(Texts.common.fileTooLargeMSG);
+        break;
+      case ErrorCode.TooManyFiles:
+        error(Texts.common.tooManyFilesMSG);
+        break;
+      default:
+        error(Texts.common.errorFileUploadMSG);
+    }
+  };
+
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-      console.log(fileRejections);
-
+      handleFileRejections(fileRejections);
       setLocalFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
     },
     []
   );
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+
+  const { getRootProps, getInputProps } = useDropzone({
     accept: {
       [MIMES.jpg]: [],
       [MIMES.pdf]: [],
@@ -53,7 +68,7 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
       prevFiles.filter((file) => file !== fileToRemove)
     );
   };
-  const acceptedFileText = ["jpg", "png", "pdf"];
+  const acceptedFileText = ["jpg", "png", "pdf", "mp4"];
   const toggle = () => {
     changeIsOpenModal(false);
     changeKey(null);
@@ -100,7 +115,7 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
               style: {
                 padding: theme.spacing(2),
                 border: `2px ${
-                  acceptedFiles.length > 0 ? "darkblue" : "lightgray"
+                  localFiles.length > 0 ? "darkblue" : "lightgray"
                 } dashed`,
                 display: "flex",
                 flexDirection: "column",

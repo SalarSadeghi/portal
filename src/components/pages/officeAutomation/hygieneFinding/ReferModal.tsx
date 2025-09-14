@@ -15,6 +15,7 @@ interface ReferProps {
   entityNumber?: string;
   id?: string;
 }
+
 const ReferModal = ({ id, entityNumber }: ReferProps) => {
   const { isOpenModal, changeIsOpenModal, changeKey } = modalStore(
     (state) => state
@@ -28,24 +29,23 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
     const err = fileRejections[0].errors[0];
     switch (err.code) {
       case ErrorCode.FileTooLarge:
-        error("حجم فایل بیش از حد مجاز می‌باشد.");
+        error(Texts.common.fileTooLargeMSG);
         break;
       case ErrorCode.TooManyFiles:
-        error("تعداد فایل بیش از حد مجاز می‌باشد");
+        error(Texts.common.tooManyFilesMSG);
         break;
       default:
-        error("خطا در بارگذاری فایل");
+        error(Texts.common.errorFileUploadMSG);
     }
   };
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       handleFileRejections(fileRejections);
-
       setLocalFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
     },
     []
   );
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: {
       [MIMES.jpg]: [],
       [MIMES.pdf]: [],
@@ -94,7 +94,7 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
     <Modal
       width="95%"
       maxHeight="85%"
-      isOpen={true || isOpenModal}
+      isOpen={isOpenModal}
       onToggle={toggle}
       title={Texts.pages.hse.startRefer}
     >
@@ -113,7 +113,7 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
               style: {
                 padding: theme.spacing(2),
                 border: `2px ${
-                  acceptedFiles.length > 0 ? "darkblue" : "lightgray"
+                  localFiles.length > 0 ? "darkblue" : "lightgray"
                 } dashed`,
                 display: "flex",
                 flexDirection: "column",

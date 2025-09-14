@@ -18,7 +18,6 @@ import {
   getSafetyFindings,
   getSafetyFindingSubjects,
   postSafetyFinding,
-
   RoleIdByGroupId,
   SafetyFindingsRequestDto,
 } from "@/api/officeAutomation/safetyFinding";
@@ -153,7 +152,7 @@ const SafetyFinding = () => {
       setValue("subject", null);
       setValue("finded", null);
       setValue("correction", false);
-      setReferData(data);
+      setReferData({ id: data?.id, entityNumber: data?.entityNumber });
       changeIsOpenModal(true);
       changeKey(ModalKeys.START_REFER);
     },

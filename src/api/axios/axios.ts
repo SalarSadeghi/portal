@@ -16,7 +16,7 @@ export interface PaginatedResponse<T> {
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
-    "Content-Type": "application/json",
+    // "Content-Type": "application/json",
     // Authorization: `Bearer ${localStorage.getItem("token")}`,
     // Add any other default headers here
   },
