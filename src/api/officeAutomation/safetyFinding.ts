@@ -171,9 +171,9 @@ export const postSafetyFinding = async (data: SafetyFindingsRequestDto) => {
 
 export const postSafetyFindingRefer = async (data: FormData) => {
   const res = await axiosInstance.post(`${SAFTY_FINDING_URL}/refer`, data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+    // headers: {
+    //   "Content-Type": "multipart/form-data",
+    // },
   });
   return res.data;
 };

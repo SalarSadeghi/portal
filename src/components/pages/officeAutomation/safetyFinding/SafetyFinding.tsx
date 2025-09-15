@@ -1,7 +1,6 @@
 import { Controller, useForm, type SubmitHandler } from "react-hook-form";
 // import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  Button,
   FormControl,
   //  InputAdornment,
   TextField,
@@ -36,6 +35,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SafetyFindingFormSchema } from "@/validations/officeAutomation/SafetyFinding";
 import { useNotification } from "@/hooks/useNotification";
 import ReferModal from "./ReferModal";
+import CustomButton from "@/components/inputs/CustomButton";
 
 interface FormValues {
   subject: { id: string; label: string };
@@ -531,18 +531,16 @@ const SafetyFinding = () => {
               <div
                 className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}
               >
-                <Button
+                <CustomButton
                   fullWidth
                   // sx={{ backgroundColor: "rgb(138, 81, 19)" }}
                   color="success"
                   variant="contained"
                   type="submit"
-                  loading={isLoadingCreateSafetyFinding}
+                  isLoading={isLoadingCreateSafetyFinding}
                   disabled={isLoadingCreateSafetyFinding}
-                  // onClick={handleClickOnSave}
-                >
-                  ثبت
-                </Button>
+                  label={Texts.common.register}
+                />
                 {/* <Button
                     fullWidth
                     sx={{ backgroundColor: "rgb(19, 138, 129)" }}

@@ -1,5 +1,4 @@
 import {
-  Button,
   FormControl,
   //  InputAdornment,
   TextField,
@@ -34,6 +33,7 @@ import { hygienFindingStore } from "@/store/officeAutomation/HygienFinding";
 import CardMessage from "@/components/ui/CardMessage";
 import { useNotification } from "@/hooks/useNotification";
 import ReferModal from "./ReferModal";
+import CustomButton from "@/components/inputs/CustomButton";
 
 interface FormValues {
   region: string;
@@ -505,17 +505,15 @@ const HygieneFinding = () => {
               <div
                 className={`py-8 ${isDesktopMode ? "self-end" : "fullWidth"}`}
               >
-                <Button
+                <CustomButton
                   fullWidth
                   color="success"
                   variant="contained"
                   type="submit"
                   disabled={isLoadingCreateHugienForm}
-                  loading={isLoadingCreateHugienForm}
-                  // onClick={handleClickOnSave}
-                >
-                  ثبت
-                </Button>
+                  isLoading={isLoadingCreateHugienForm}
+                  label={Texts.common.register}
+                />
               </div>
             </form>
           </div>

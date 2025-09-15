@@ -12,7 +12,8 @@
     "errorOperationMSG": "انجام عملیات با خطا مواجه شد.",
     "fileTooLargeMSG": "حجم فایل بیش از حد مجاز می‌باشد.",
     "tooManyFilesMSG": "تعداد فایل بیش از حد مجاز می‌باشد.",
-    "errorFileUploadMSG": "خطا در بارگذاری فایل"
+    "errorFileUploadMSG": "خطا در بارگذاری فایل",
+    "register": "ثبت"
   },
   "pages": {
     "hse": {

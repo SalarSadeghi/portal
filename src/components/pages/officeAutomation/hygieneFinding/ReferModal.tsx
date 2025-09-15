@@ -77,6 +77,7 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
     mutationFn: postHygieneRefer,
     onSuccess: () => {
       success(Texts.pages.hse.startReferSuccessMSG);
+      toggle()
     },
     onError: () => {
       error(Texts.common.errorOperationMSG);
