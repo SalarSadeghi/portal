@@ -70,10 +70,20 @@ const SafetyFindngResponsiblePersonModal = () => {
       headerName: "مسئول واحد",
       align: "center",
       headerAlign: "center",
-      minWidth: 280,
+      // minWidth: 280,
+      flex: 1,
       resizable: true,
       sortable: true,
       filterable: false,
+      renderCell: (params) => (
+        <div
+          className={`flex flex-col items-center justify-center h-full gap-2 ${
+            isDesktopMode ? "text-base" : "text-xs"
+          }`}
+        >
+          <span className="text-wrap">{params.row.title}</span>
+        </div>
+      ),
     },
   ];
   const { data: safetyFindingsUnitManagers, isLoading } = useQuery(

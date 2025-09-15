@@ -68,10 +68,20 @@ const HygieneFindingContractorModal = () => {
       headerName: "مشخصات پیمانکار",
       align: "center",
       headerAlign: "center",
-      minWidth: 400,
+      // minWidth: 400,
+      flex: 1,
       resizable: true,
       sortable: true,
       filterable: false,
+      renderCell: (params) => (
+        <div
+          className={`flex flex-col items-center justify-center h-full ${
+            isDesktopMode ? "text-base" : "text-xs"
+          }`}
+        >
+          <span className="text-wrap">{params.row?.contractorName}</span>
+        </div>
+      ),
     },
   ];
 

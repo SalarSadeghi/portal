@@ -74,12 +74,21 @@ const HygieneFindingResponsiblePersonModal = () => {
       headerName: "مشخصات رییس واحد",
       align: "center",
       headerAlign: "center",
-      minWidth: 500,
+      // minWidth: 400,
+      flex: 1,
       resizable: true,
       sortable: true,
       filterable: false,
-      renderCell: (params) =>
-        `${params.row.firstName} ${params.row.lastName} (${params.row.roleName})`,
+      renderCell: (params) => (
+        <div
+          className={`flex flex-col items-center justify-center h-full gap-2 ${
+            isDesktopMode ? "text-base" : "text-xs"
+          }`}
+        >
+          <span className="text-wrap">{params.row?.fullName}</span>
+          <span className="text-wrap">{params.row?.roleName}</span>
+        </div>
+      ),
     },
   ];
   const { data: hygieneUnitManagers, isLoading } = useQuery(

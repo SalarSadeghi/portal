@@ -68,7 +68,8 @@ const SafetyFindingRegionModal = () => {
       headerName: "ناحیه / واحد",
       align: "left",
       headerAlign: "center",
-      minWidth: 400,
+      // minWidth: 400,
+      flex: 1,
       resizable: true,
       sortable: true,
       filterable: false,
@@ -79,8 +80,8 @@ const SafetyFindingRegionModal = () => {
               isDesktopMode ? "text-base" : "text-xs"
             }`}
           >
-            <span>{params.row?.unitName}</span>
-            <span>({params?.row?.committeeName})</span>
+            <span className="text-wrap">{params.row?.unitName}</span>
+            <span className="text-wrap">({params?.row?.committeeName})</span>
           </div>
         );
       },
