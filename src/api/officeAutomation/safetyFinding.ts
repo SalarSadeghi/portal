@@ -63,6 +63,11 @@ export interface Contractor {
   contractorName: string;
 }
 
+export interface ErrorAttachmentDto {
+  id: string;
+  fileName: string;
+}
+
 export const getSafetyFindingSubjects = async () => {
   const res = await axiosInstance.get<SubjectOption[]>(
     `${SAFTY_FINDING_URL}/subjects`
@@ -170,10 +175,14 @@ export const postSafetyFinding = async (data: SafetyFindingsRequestDto) => {
 };
 
 export const postSafetyFindingRefer = async (data: FormData) => {
-  const res = await axiosInstance.post(`${SAFTY_FINDING_URL}/refer`, data, {
-    // headers: {
-    //   "Content-Type": "multipart/form-data",
-    // },
-  });
-  return res.data;
+  const res = await axiosInstance.post<ErrorAttachmentDto[] | null>(
+    `${SAFTY_FINDING_URL}/refer`,
+    data,
+    {
+      // headers: {
+      //   "Content-Type": "multipart/form-data",
+      // },
+    }
+  );
+  return res;
 };

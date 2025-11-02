@@ -176,6 +176,8 @@ const SafetyFinding = () => {
       priority: data.priority.id,
     };
     createSafetyFinding(dataTosend);
+    // changeIsOpenModal(true);
+    // changeKey(ModalKeys.START_REFER);
   };
 
   useEffect(() => {
@@ -497,23 +499,6 @@ const SafetyFinding = () => {
                     : "flex-col gap-4 items-center"
                 }`}
               >
-                {/* <div className={`${isDesktopMode ? "w-1/2" : "w-full"}`}>
-                <DatePicker
-                  className="w-full"
-                  // disableFuture
-                  // openTo="day"
-                  // value={dateFilter as unknown as Date}
-                  label={`تاریخ پیشنهادی اقدام`}
-                  // helperText={Texts.common.selectSearchDate}
-                  // onChange={(value) => {
-                  //   setDateFilter(value);
-                  //   setPaginationModel((prev) => ({ ...prev, page: 0 }));
-                  // }}
-                  // slotProps={{
-                  //   actionBar: { actions: ["accept", "cancel", "clear"] },
-                  // }}
-                />
-              </div> */}
                 <div
                   className={`flex items-center ${
                     isDesktopMode ? "w-1/2" : "w-full "
@@ -541,51 +526,6 @@ const SafetyFinding = () => {
                   disabled={isLoadingCreateSafetyFinding}
                   label={Texts.common.register}
                 />
-                {/* <Button
-                    fullWidth
-                    sx={{ backgroundColor: "rgb(19, 138, 129)" }}
-                    // color="success"
-                    variant="contained"
-                    type="submit"
-                    // disabled={isLoading}
-                    // onClick={handleClickOnSave}
-                  >
-                    ثبت
-                  </Button>
-                  <Button
-                    fullWidth
-                    sx={{ backgroundColor: "rgb(138,19,103)" }}
-                    // color="success"
-                    variant="contained"
-                    type="submit"
-                    // disabled={isLoading}
-                    // onClick={handleClickOnSave}
-                  >
-                    ثبت
-                  </Button>
-                  <Button
-                    fullWidth
-                    sx={{ backgroundColor: "rgb(240,240,240)" }}
-                    // color="success"
-                    variant="contained"
-                    type="submit"
-                    // disabled={isLoading}
-                    // onClick={handleClickOnSave}
-                  >
-                    ثبت
-                  </Button>
-
-                  <Button
-                    fullWidth
-                    sx={{ backgroundColor: "rgb(50,50,50)" }}
-                    // color="success"
-                    variant="contained"
-                    type="submit"
-                    // disabled={isLoading}
-                    // onClick={handleClickOnSave}
-                  >
-                    ثبت
-                  </Button> */}
               </div>
             </form>
           </div>

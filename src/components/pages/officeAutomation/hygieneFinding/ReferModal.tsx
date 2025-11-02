@@ -4,13 +4,22 @@ import Texts from "@/assets/json/Texts.json";
 import { ErrorCode, FileRejection, useDropzone } from "react-dropzone";
 import { MIMES } from "@/types/common/file";
 import { Chip, IconButton, useTheme } from "@mui/material";
-import { DeleteOutline, VerifiedOutlined } from "@mui/icons-material";
+import {
+  CloseOutlined,
+  DeleteOutline,
+  Done,
+  VerifiedOutlined,
+} from "@mui/icons-material";
 import CustomButton from "@/components/inputs/CustomButton";
-import { isDesktop } from "@/utils";
-import { useCallback, useState } from "react";
+import { isDesktop, sha256 } from "@/utils";
+import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "react-query";
 import { useNotification } from "@/hooks/useNotification";
-import { postHygieneRefer } from "@/api/officeAutomation/hygienFinding";
+import {
+  ErrorAttachmentDto,
+  postHygieneRefer,
+} from "@/api/officeAutomation/hygienFinding";
+import { AxiosError } from "axios";
 interface ReferProps {
   entityNumber?: string;
   id?: string;
@@ -23,6 +32,9 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
   const theme = useTheme();
   const isDesktopMode = isDesktop();
   const [localFiles, setLocalFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [errorFiles, setErrorFiles] = useState<File[]>([]);
+  const [hasErrorFile, setHasErrorFile] = useState<Boolean>(false);
   const { error, success } = useNotification();
   const handleFileRejections = (fileRejections: FileRejection[]) => {
     if (fileRejections.length === 0) return;
@@ -38,6 +50,7 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
         error(Texts.common.errorFileUploadMSG);
     }
   };
+
   const onDrop = useCallback(
     (acceptedFiles: File[], fileRejections: FileRejection[]) => {
       handleFileRejections(fileRejections);
@@ -45,6 +58,7 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
     },
     []
   );
+
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       [MIMES.jpg]: [],
@@ -56,18 +70,19 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
       [MIMES.webm]: [],
       [MIMES.avi]: [],
     },
-    maxFiles: 4,
-    maxSize: 20 * 1024 * 1024, // 20 MB,
+    maxFiles: 6,
+    maxSize: 50 * 1024 * 1024, // 50 MB,
     multiple: true,
     onDrop,
   });
 
-  const removeFile = (fileToRemove: File) => {
+  const removeFile = useCallback((fileToRemove: File) => {
     setLocalFiles((prevFiles) =>
       prevFiles.filter((file) => file !== fileToRemove)
     );
-  };
-  const acceptedFileText = ["jpg", "png", "pdf", "mp4"];
+  }, []);
+
+  const acceptedFileText = useMemo(() => ["jpg", "png", "pdf", "mp4"], []);
   const toggle = () => {
     changeIsOpenModal(false);
     changeKey(null);
@@ -77,10 +92,33 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
     mutationFn: postHygieneRefer,
     onSuccess: () => {
       success(Texts.pages.hse.startReferSuccessMSG);
-      toggle()
+      toggle();
     },
-    onError: () => {
-      error(Texts.common.errorOperationMSG);
+    onError: async (err: AxiosError) => {
+      if (err.response?.status === 503) {
+        const attachments = err.response.data as ErrorAttachmentDto[];
+        // const invalidFilesNames = attachments.map((a) => a.fileName).join(", ");
+        error(`بارگذاری ${attachments?.length} فایل با خطا مواجه شد.`);
+        const invalidIds = new Set(attachments.map((e) => e.id));
+        const localFileHashes = await Promise.all(
+          localFiles.map(async (file) => ({
+            file,
+            id: await sha256(file),
+          }))
+        );
+        const invalidLocalFiles = localFileHashes
+          ?.filter((f) => invalidIds.has(f.id))
+          .map((f) => f.file);
+        const successUploadedFiles = localFileHashes
+          ?.filter((f) => !invalidIds.has(f?.id))
+          .map((f) => f.file);
+        setUploadedFiles((prev) => [...prev, ...successUploadedFiles]);
+        setLocalFiles(invalidLocalFiles);
+        setErrorFiles(invalidLocalFiles);
+        setHasErrorFile(true);
+      } else {
+        error(Texts.common.errorOperationMSG);
+      }
     },
   });
 
@@ -146,8 +184,41 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
               }}
             >
               {Texts.common.attchFileHintSize}:{" "}
-              <strong className="text-sm">20 مگابایت</strong>
+              <strong className="text-sm">50 مگابایت</strong>
             </p>
+          </div>
+          <div>
+            <ul className="gap-2 flex flex-col">
+              {uploadedFiles?.map((file, i) => (
+                <li
+                  key={i}
+                  className="flex items-center"
+                  style={{ color: theme.palette.primary.main }}
+                >
+                  <div className="flex gap-2 items-center">
+                    <Chip
+                      sx={{
+                        "& .MuiChip-label": {
+                          display: "flex",
+                          overflow: "hidden",
+                        },
+                        maxWidth: "100%",
+                      }}
+                      icon={<Done color="success" />}
+                      label={
+                        <div
+                          className={`flex gap-1 ${
+                            isDesktopMode ? "max-w-[700px]" : "max-w-[200px]"
+                          }`}
+                        >
+                          <span className="truncate">{file.name}</span>
+                        </div>
+                      }
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
           <div>
             <ul className="gap-2 flex flex-col">
@@ -167,14 +238,17 @@ const ReferModal = ({ id, entityNumber }: ReferProps) => {
                         maxWidth: "100%",
                       }}
                       icon={
-                        <>
+                        <div>
+                          {hasErrorFile && errorFiles?.includes(file) ? (
+                            <CloseOutlined color="error" />
+                          ) : null}
                           <IconButton
                             color="error"
                             onClick={() => removeFile(file)}
                           >
                             <DeleteOutline />
                           </IconButton>
-                        </>
+                        </div>
                       }
                       label={
                         <div

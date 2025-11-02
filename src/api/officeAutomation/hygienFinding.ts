@@ -36,6 +36,11 @@ export interface HygieneRequetstDto {
   correction: boolean;
 }
 
+export interface ErrorAttachmentDto {
+  id: string;
+  fileName: string;
+}
+
 export const getHygienePriority = async () => {
   const res = await axiosInstance.get<PriorityOption[]>(
     `${HYGIENE_FINDING_URL}/priorityTypes`
@@ -81,6 +86,9 @@ export const postHygiene = async (data: HygieneRequetstDto) => {
 };
 
 export const postHygieneRefer = async (data: FormData) => {
-  const res = await axiosInstance.post(`${HYGIENE_FINDING_URL}/refer`, data);
+  const res = await axiosInstance.post<ErrorAttachmentDto[] | null>(
+    `${HYGIENE_FINDING_URL}/refer`,
+    data
+  );
   return res.data;
 };
