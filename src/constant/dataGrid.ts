@@ -1,6 +1,6 @@
 import type { GridLocaleText } from "@mui/x-data-grid";
 
-export const dataGridLocaleTexts: GridLocaleText = {
+export const dataGridLocaleTexts: Partial<GridLocaleText> = {
   // noRowsLabel: "هیچ ردیفی وجود ندارد",
   // noResultsOverlayLabel: "نتیجه‌ای یافت نشد.",
 
